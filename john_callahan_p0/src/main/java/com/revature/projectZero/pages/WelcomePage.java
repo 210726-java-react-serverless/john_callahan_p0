@@ -43,9 +43,11 @@ public class WelcomePage extends Page {
                 System.out.println("Thank you for using our App!");
                 AppState as = new AppState();
                 as.closeApp();
+                // TODO remove this system.exit function
+                System.exit(0);
+                break;
             default:
                 System.out.println("Sorry, but your input was invalid.");
-                router.navigate("/welcome");
         }
     }
 }

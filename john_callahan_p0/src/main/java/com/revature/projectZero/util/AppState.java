@@ -6,7 +6,7 @@ import com.revature.projectZero.pages.WelcomePage;
 
 public class AppState {
     // Set up the appRunning boolean for closing the app, and the router, linked to the PageRouter class.
-    private boolean appRunning;
+    private boolean appRunning = true;
     private final PageRouter router;
 
     // This should be the only instantiation needed of a Buffered Reader, which will be injected to each Page.
@@ -14,9 +14,10 @@ public class AppState {
 
     // This is AppState, the constructor for this class.
     public AppState() {
-        appRunning = true;
         router = new PageRouter();
 
+        // This is a list of all pages that are added to the pageset.
+        // Use the addPage method and give it the necessary features.
         router.addPage(new WelcomePage(reader, router));
     }
 
@@ -37,6 +38,8 @@ public class AppState {
 
     // the application shutdown method, safely (and effectively) closes the app.
     public void closeApp() {
-        appRunning = false;
+        // TODO determine the logic that would allow the application to properly shut down.
+        //  The while method is not ending as it needs to.
+        this.appRunning = false;
     }
 }
