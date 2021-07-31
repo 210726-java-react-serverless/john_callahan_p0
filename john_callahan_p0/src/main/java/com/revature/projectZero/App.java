@@ -1,6 +1,6 @@
 package com.revature.projectZero;
 
-import com.revature.projectZero.exceptions.ExceptionServices;
+import com.revature.projectZero.service.ExceptionServices;
 import com.revature.projectZero.util.AppState;
 
 public class App extends ExceptionServices {
