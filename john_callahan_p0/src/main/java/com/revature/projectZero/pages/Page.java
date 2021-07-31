@@ -18,10 +18,6 @@ public abstract class Page {
         this.router = router;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public String getRoute() {
         return route;
     }

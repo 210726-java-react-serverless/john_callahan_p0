@@ -17,7 +17,7 @@ public class AppState {
         appRunning = true;
         router = new PageRouter();
 
-
+        router.addPage(new WelcomePage(reader, router));
     }
 
     // The beating heart of the application. So long as appRunning is true,
