@@ -14,5 +14,13 @@ public abstract class Page {
         this.reader = reader;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getRoute() {
+        return route;
+    }
+
     public abstract void render() throws Exception;
 }
