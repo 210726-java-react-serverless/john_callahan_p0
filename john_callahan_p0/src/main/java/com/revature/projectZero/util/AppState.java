@@ -2,7 +2,10 @@ package com.revature.projectZero.util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import com.revature.projectZero.pages.WelcomePage;
+
 
 public class AppState {
     // Set up the appRunning boolean for closing the app, and the router, linked to the PageRouter class.
@@ -23,15 +26,18 @@ public class AppState {
 
     // The beating heart of the application. So long as appRunning is true,
     // the application will continue trying to render.
+
+    Logger logger = LogManager.getLogger(AppState.class);
     public void startApp() {
         router.navigate("/welcome");
+
+
 
         while(appRunning) {
             try {
                 router.getCurrentPage().render();
             } catch (Exception e) {
-                //TODO replace this with a logging request to a text file.
-                e.printStackTrace();
+                logger.error("User input an invalid value for the field.");
             }
         }
     }

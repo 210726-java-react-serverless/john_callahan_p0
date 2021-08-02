@@ -3,6 +3,7 @@ package com.revature.projectZero.pages;
 import com.revature.projectZero.util.AppState;
 import com.revature.projectZero.util.PageRouter;
 import java.io.BufferedReader;
+import java.io.IOException;
 
 
 public class WelcomePage extends Page {
@@ -17,7 +18,7 @@ public class WelcomePage extends Page {
     }
 
     @Override
-    public void render() throws Exception {
+    public void render() throws IOException {
         //Prompt the user for a selection of one of these three things.
          System.out.print("Please make a selection: \n" +
                 "\n1) Login" +
