@@ -32,12 +32,12 @@ public class WelcomePage extends Page {
             case "1":
             case "Login":
                 System.out.println("Redirecting you to Login services...");
-                //TODO connect the Login page to the Welcome page
+                router.navigate("/login");
                 break;
             case "2":
             case "Register":
                 System.out.println("Redirecting you to Registration services...");
-                //TODO connect the Register page to the Welcome page
+                router.navigate("/register");
                 break;
             case "3":
             case "Exit":
