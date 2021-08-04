@@ -16,5 +16,7 @@ public interface CrudRepository<F> {
     boolean update(F updatedResource);
     boolean deleteByID(int id);
 
+    // TODO: Implement access to MongoDB in this interface for the purposes of accessing several collections inside of Project0School!
+
     Logger logger = LogManager.getLogger(CrudRepository.class);
 }

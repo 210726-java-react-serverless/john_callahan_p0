@@ -2,13 +2,9 @@ package com.revature.projectZero.util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.rmi.registry.Registry;
-
-import com.revature.projectZero.pages.LoginPage;
-import com.revature.projectZero.pages.StudentRegisterPage;
+import com.revature.projectZero.pages.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.revature.projectZero.pages.WelcomePage;
 
 
 public class AppState {
@@ -27,7 +23,9 @@ public class AppState {
         // Use the addPage method and give it the necessary features.
         router.addPage(new WelcomePage(reader, router))
                 .addPage(new LoginPage(reader, router))
-                .addPage(new StudentRegisterPage(reader, router));
+                .addPage(new StudentRegisterPage(reader, router))
+                .addPage(new StudentDashboard(reader, router))
+                .addPage(new FacultyDashboard(reader, router));
     }
 
     // The beating heart of the application. So long as appRunning is true,
