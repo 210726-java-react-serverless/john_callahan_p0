@@ -7,10 +7,14 @@ package com.revature.projectZero.repositories;
         I believe this code is one great example of this, since it can be passed anything as 'F'.
  */
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public interface CrudRepository<F> {
     F findByID(int id);
     F save(F newResource);
     boolean update(F updatedResource);
     boolean deleteByID(int id);
 
+    Logger logger = LogManager.getLogger(CrudRepository.class);
 }

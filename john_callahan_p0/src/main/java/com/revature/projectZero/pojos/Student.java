@@ -11,16 +11,23 @@ public class Student {
     private String username;
     private String password;
 
-    public Student(String firstName, String lastName, String email, String username, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+    // public empty constructor is needed to retrieve the POJO
+    public Student(){}
+
+    public Student(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    public Student(String firstName, String lastName, String email, String username, String password, int id) {
-        this(firstName,lastName,email,username,password);
+    public Student(String username, String password, String firstName, String lastName, String email) {
+        this(username, password);
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public Student(String username, String password, String firstName, String lastName, String email, int id) {
+        this(firstName, lastName, email, username, password);
         this.studentID = id;
     }
 
