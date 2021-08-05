@@ -1,6 +1,10 @@
 package com.revature.projectZero.repositories;
 
 import static com.mongodb.client.model.Filters.eq;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.projectZero.pojos.Student;
 import org.bson.Document;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -17,10 +21,16 @@ public class MongoTestingRepo {
             MongoCollection<Document> collection = database.getCollection("StudentCredentials");
             Document doc = collection.find(eq("username", "Test1")).first();
             if (doc != null) {
-                System.out.println(doc.toJson());
+                String json = doc.toJson();
+                System.out.println(json);
+                Student student = new ObjectMapper().readValue(json, Student.class);
+
+                System.out.println(student);
             } else {
                 System.out.println("Nothing was found related to your search terms");
             }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
     }
 }

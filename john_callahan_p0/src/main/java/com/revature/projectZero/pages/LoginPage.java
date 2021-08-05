@@ -25,12 +25,13 @@ public class LoginPage extends Page {
         String username;
         String password;
 
-        System.out.println("Welcome to the Login portal!\n"
-                    + "Are you a Student, or a Faculty member?"
-                    + "1) Student"
-                    + "2) Faculty"
-                    + "3) Register a new Student"
-                    + "4) Go back to the Welcome page");
+        System.out.print("\nWelcome to the Login portal!\n"
+                    + "\nAre you a Student, or a Faculty member?"
+                    + "\n1) Student"
+                    + "\n2) Faculty"
+                    + "\n3) Register a new Student"
+                    + "\n4) Go back to the Welcome page"
+                    + "\n> ");
 
         userInput = reader.readLine();
 
@@ -53,10 +54,17 @@ public class LoginPage extends Page {
             case "new":
                 System.out.println("Great! Redirecting you to the Registry");
                 router.navigate("/register");
-                break;
+                return;
+            case "4":
+            case "back":
+            case "Back":
+                System.out.println("Sending you back to the Welcome page...");
+                router.navigate("/welcome");
+                return;
             default:
                 System.out.println("Sorry, we didn't understand that!");
                 router.navigate("/login");
+                return;
         }
 
         // Checks whether or not the user is Faculty or a Student.
@@ -115,14 +123,8 @@ public class LoginPage extends Page {
                         + "Y/N: ");
                 input = reader.readLine();
                 // checks user input and learns whether or not the user wishes to be on this login screen.
-                switch(input){
-                    case "y":
-                    case "Y":
-                        break;
-                    case "n":
-                    case "N":
-                        wantsToBeHere = false;
-                        break;
+                if(input == "n" || input == "N"){
+                    wantsToBeHere = false;
                 }
             }
         }

@@ -1,9 +1,12 @@
 package com.revature.projectZero.pojos;
 
+import org.bson.types.ObjectId;
+
 import java.util.Objects;
 
 public class Student {
 
+    private ObjectId _id;
     private int studentID;
     private String firstName;
     private String lastName;
@@ -79,16 +82,37 @@ public class Student {
         this.password = password;
     }
 
+    public ObjectId get_id() {
+        return _id;
+    }
+
+    public void set_id(ObjectId _id) {
+        this._id = _id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return studentID == student.studentID && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(email, student.email) && Objects.equals(username, student.username) && Objects.equals(password, student.password);
+        return studentID == student.studentID && Objects.equals(_id, student._id) && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(email, student.email) && Objects.equals(username, student.username) && Objects.equals(password, student.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(studentID, firstName, lastName, email, username, password);
+        return Objects.hash(_id, studentID, firstName, lastName, email, username, password);
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "_id=" + _id +
+                ", studentID=" + studentID +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

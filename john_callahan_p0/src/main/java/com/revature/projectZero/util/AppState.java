@@ -27,7 +27,7 @@ public class AppState {
 
         // This is a list of all pages that are added to the pageset.
         // Use the addPage method and give it the necessary features.
-        router.addPage(new WelcomePage(reader, router))
+        router.addPage(new WelcomePage(reader, router, this))
                 .addPage(new LoginPage(reader, router, checker))
                 .addPage(new StudentRegisterPage(reader, router, checker))
                 .addPage(new StudentDashboard(reader, router))

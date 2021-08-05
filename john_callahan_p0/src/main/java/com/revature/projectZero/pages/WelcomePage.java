@@ -13,8 +13,12 @@ public class WelcomePage extends Page {
         Dependency injection works by calling the super method (which contains references to both the
         router and the consoleReader) and looping them through the WelcomePage() constructor.
      */
-    public WelcomePage(BufferedReader reader, PageRouter router) {
+
+    private AppState app;
+
+    public WelcomePage(BufferedReader reader, PageRouter router, AppState app) {
         super("WelcomePage", "/welcome", reader, router);
+        this.app = app;
     }
 
     @Override
@@ -42,11 +46,8 @@ public class WelcomePage extends Page {
             case "3":
             case "Exit":
                 System.out.println("Thank you for using our App!");
-                AppState as = new AppState();
-                as.closeApp();
-                // TODO remove this system.exit function
-                System.exit(0);
-                break;
+                app.closeApp();
+                return;
             default:
                 System.out.println("Sorry, but your input was invalid.");
         }

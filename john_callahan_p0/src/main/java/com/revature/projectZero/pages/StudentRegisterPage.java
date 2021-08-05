@@ -30,6 +30,7 @@ public class StudentRegisterPage extends Page {
         if(input.equals("N") || input.equals("n")) {
             System.out.println("Directing you back to the Welcome page...");
             router.navigate("/welcome");
+            return;
         }
 
         System.out.print("First name: ");
@@ -41,8 +42,10 @@ public class StudentRegisterPage extends Page {
         System.out.print("\nEmail: ");
         String email = reader.readLine();
 
+        // TODO: Implement "Is username taken?" While loop.
         System.out.print("\nUsername: ");
         String username = reader.readLine();
+        // checker.validateStudent(username);
 
         System.out.print("\nPassword: ");
         String password = reader.readLine();
