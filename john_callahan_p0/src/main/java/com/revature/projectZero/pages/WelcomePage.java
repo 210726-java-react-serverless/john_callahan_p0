@@ -4,7 +4,7 @@ import com.revature.projectZero.util.AppState;
 import com.revature.projectZero.util.PageRouter;
 import java.io.BufferedReader;
 import java.io.IOException;
-
+import static com.revature.projectZero.util.AppState.closeApp;
 
 public class WelcomePage extends Page {
 
@@ -46,7 +46,7 @@ public class WelcomePage extends Page {
             case "3":
             case "Exit":
                 System.out.println("Thank you for using our App!");
-                app.closeApp();
+                closeApp();
                 return;
             default:
                 System.out.println("Sorry, but your input was invalid.");

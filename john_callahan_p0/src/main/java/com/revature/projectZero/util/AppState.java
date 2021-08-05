@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 public class AppState {
     // Set up the appRunning boolean for closing the app, and the router, linked to the PageRouter class.
-    private boolean appRunning = true;
+    private static boolean appRunning = true;
     private final PageRouter router;
 
     // This should be the only instantiation needed of a Buffered Reader, which will be injected to each Page.
@@ -53,9 +53,7 @@ public class AppState {
     }
 
     // the application shutdown method, safely (and effectively) closes the app.
-    public void closeApp() {
-        // TODO determine the logic that would allow the application to properly shut down.
-        //  The while method is not ending as it needs to.
-        this.appRunning = false;
+    public static void closeApp() {
+        appRunning = false;
     }
 }
