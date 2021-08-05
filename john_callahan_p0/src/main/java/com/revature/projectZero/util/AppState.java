@@ -3,6 +3,8 @@ package com.revature.projectZero.util;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import com.revature.projectZero.pages.*;
+import com.revature.projectZero.repositories.SchoolRepository;
+import com.revature.projectZero.service.ValidationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,10 +21,14 @@ public class AppState {
     public AppState() {
         router = new PageRouter();
 
+        // make the app components (certain dependencies to get injected)
+        SchoolRepository groupRepo = new SchoolRepository();
+        ValidationService checker = new ValidationService(groupRepo);
+
         // This is a list of all pages that are added to the pageset.
         // Use the addPage method and give it the necessary features.
         router.addPage(new WelcomePage(reader, router))
-                .addPage(new LoginPage(reader, router))
+                .addPage(new LoginPage(reader, router, checker))
                 .addPage(new StudentRegisterPage(reader, router))
                 .addPage(new StudentDashboard(reader, router))
                 .addPage(new FacultyDashboard(reader, router));

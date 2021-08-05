@@ -1,18 +1,27 @@
 package com.revature.projectZero.pages;
 
+import com.revature.projectZero.pojos.Faculty;
+import com.revature.projectZero.pojos.Student;
+import com.revature.projectZero.service.ValidationService;
 import com.revature.projectZero.util.PageRouter;
 import java.io.BufferedReader;
 
 public class LoginPage extends Page {
 
-    public LoginPage(BufferedReader reader, PageRouter router){ super("LoginPage", "/login", reader, router); }
+    public LoginPage(BufferedReader reader, PageRouter router, ValidationService checker){
+        super("LoginPage", "/login", reader, router);
+        this.checker = checker;
+    }
 
     //TODO: Clean up the Login page
+
+    public final ValidationService checker;
+
+    private boolean isUserFaculty = false;
 
     @Override
     public void render() throws Exception {
         String userInput;
-        boolean isUserFaculty = false;
         String username;
         String password;
 
@@ -63,8 +72,12 @@ public class LoginPage extends Page {
 
 
                 //TODO: Instate Faculty login logic here!
+                Faculty authFac = checker.facLogin(username, password);
 
-
+                if(authFac != null){
+                    System.out.println("Login successful! Welcome back, " + authFac.getFirstName() + "!");
+                    router.navigate("/f_dashboard");
+                }
             }
             // This is the "game over" message that displays if you fail to validate as
             // a Faculty member three times.
@@ -89,6 +102,7 @@ public class LoginPage extends Page {
 
 
                     // TODO: Instate Student Login logic here!
+                    Student authStudent = checker.login(username, password);
 
 
                     // This is a simple counter, added as a sort of sobriety test for
