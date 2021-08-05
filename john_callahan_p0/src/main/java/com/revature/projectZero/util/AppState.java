@@ -29,7 +29,7 @@ public class AppState {
         // Use the addPage method and give it the necessary features.
         router.addPage(new WelcomePage(reader, router))
                 .addPage(new LoginPage(reader, router, checker))
-                .addPage(new StudentRegisterPage(reader, router))
+                .addPage(new StudentRegisterPage(reader, router, checker))
                 .addPage(new StudentDashboard(reader, router))
                 .addPage(new FacultyDashboard(reader, router));
     }
