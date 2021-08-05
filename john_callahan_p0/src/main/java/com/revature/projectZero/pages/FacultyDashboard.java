@@ -11,5 +11,6 @@ public class FacultyDashboard extends Page{
     @Override
     public void render() throws Exception {
         System.out.println("The Faculty Dashboard works!");
+        //TODO: Finish faculty dashboard
     }
 }

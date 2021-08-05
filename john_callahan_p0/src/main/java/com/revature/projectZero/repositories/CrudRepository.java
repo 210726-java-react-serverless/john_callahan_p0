@@ -7,6 +7,7 @@ package com.revature.projectZero.repositories;
         I believe this code is one great example of this, since it can be passed anything as 'F'.
  */
 
+import com.revature.projectZero.pojos.Student;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,4 +20,12 @@ public interface CrudRepository<F> {
     // TODO: Implement access to MongoDB in this interface for the purposes of accessing several collections inside of Project0School!
 
     Logger logger = LogManager.getLogger(CrudRepository.class);
+
+    public Student findUserByCredentials(String username, String password) {
+
+    }
+
+    public Student findUserByUsername(String username) {
+
+    }
 }
