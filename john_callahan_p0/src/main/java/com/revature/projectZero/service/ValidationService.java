@@ -1,7 +1,7 @@
 package com.revature.projectZero.service;
 
-import com.revature.projectZero.exceptions.InvalidRequestException;
-import com.revature.projectZero.exceptions.ResourcePersistenceException;
+import com.revature.projectZero.util.exceptions.InvalidRequestException;
+import com.revature.projectZero.util.exceptions.ResourcePersistenceException;
 import com.revature.projectZero.pojos.Faculty;
 import com.revature.projectZero.pojos.Student;
 import com.revature.projectZero.repositories.SchoolRepository;
@@ -27,7 +27,7 @@ public class ValidationService {
                         throw new ResourcePersistenceException("Provided username is already taken!");
                 }
 
-                return (Student) (schoolRepo.save(newStudent));
+                return schoolRepo.save(newStudent);
         }
 
         public Student login(String username, String password) throws Exception {

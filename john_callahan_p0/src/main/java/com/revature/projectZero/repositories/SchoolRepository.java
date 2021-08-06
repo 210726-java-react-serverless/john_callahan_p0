@@ -1,5 +1,6 @@
 package com.revature.projectZero.repositories;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -10,10 +11,15 @@ import com.revature.projectZero.util.GetConnection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecProvider;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 
-import java.io.PrintStream;
-
+import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
+import static com.mongodb.client.model.Filters.eq;
 import static com.revature.projectZero.util.GetConnection.generate;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 /**
     Create, Read, Update, and Delete using this script. It can also perform certain queries to get data
@@ -22,10 +28,15 @@ import static com.revature.projectZero.util.GetConnection.generate;
 
 public class SchoolRepository implements CrudRepository {
 
+    // These are used quite often in the CRUD methods.
     Logger logger = LogManager.getLogger(SchoolRepository.class);
     private final GetConnection connection = generate();
     private final MongoClient mongoClient = connection.getConnection();
     private final ObjectMapper mapper = new ObjectMapper();
+    CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+    CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
+    Student student;
+
 
     @Override
     public Object findByID(int id) {
@@ -33,8 +44,28 @@ public class SchoolRepository implements CrudRepository {
     }
 
     @Override
-    public Object save(Object newResource) {
+    public Object save(Object o) {
         return null;
+    }
+
+
+    // This method persists users to the database.
+    public Student save(Student newStudent) {
+
+        try {
+            MongoDatabase database = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
+            MongoCollection<Student> collection = database.getCollection("StudentCredentials", Student.class);
+            Student student = collection.find(eq("username", "Test1")).first();
+            System.out.println(student);
+
+            // this inserts the instance into the "StudentCredentials" database.
+            collection.insertOne(newStudent);
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+        return newStudent;
     }
 
     @Override
@@ -52,18 +83,17 @@ public class SchoolRepository implements CrudRepository {
 
         try {
 
-            MongoDatabase bookstoreDatabase = mongoClient.getDatabase("bookstore");
-            MongoCollection<Document> usersCollection = bookstoreDatabase.getCollection("users");
+            MongoDatabase bookstoreDatabase = mongoClient.getDatabase("Project0School");
+            MongoCollection<Document> usersCollection = bookstoreDatabase.getCollection("StudentCredentials");
             Document queryDoc = new Document("username", username).append("password", password);
-            Document authUserDoc = usersCollection.find(queryDoc).first();
+            Document userCredentials = usersCollection.find(queryDoc).first();
 
-            if (authUserDoc == null) {
+            if (userCredentials == null) {
                 return null;
             }
 
-            Student student = mapper.readValue(authUserDoc.toJson(), Student.class);
-            student.setStudentID(authUserDoc.get("_id").toString());
-            System.out.println(student);
+            Student student = mapper.readValue(userCredentials.toJson(), Student.class);
+            student.setStudentID(userCredentials.get("_id").toString());
 
             return student;
 
@@ -75,8 +105,30 @@ public class SchoolRepository implements CrudRepository {
     }
 
     @Override
-    public Student findStudentByUsername(String username) {
-        return null;
+    public Student findStudentByUsername(String username)  {
+        MongoDatabase bookstoreDatabase = mongoClient.getDatabase("Project0School");
+        MongoCollection<Document> usersCollection = bookstoreDatabase.getCollection("StudentCredentials");
+        Document queryDoc = new Document("username", username);
+        Document isUsernameTaken = usersCollection.find(queryDoc).first();
+
+
+        try {
+            if (isUsernameTaken != null) {
+                String json = isUsernameTaken.toJson();
+                Student student = mapper.readValue(json, Student.class);
+                student.setStudentID(isUsernameTaken.get("_id").toString());
+                this.student = student;
+
+            } else {
+                return null;
+            }
+
+        } catch( JsonProcessingException jse) {
+            jse.printStackTrace();
+            logger.error(jse.getMessage());
+        }
+
+        return student;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.revature.projectZero.exceptions;
+package com.revature.projectZero.util.exceptions;
 
 public class InvalidRequestException extends Exception {
     public InvalidRequestException(String message) {

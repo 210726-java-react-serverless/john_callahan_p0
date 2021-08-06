@@ -12,15 +12,13 @@ import com.revature.projectZero.pojos.Student;
 
 public interface CrudRepository<F> {
     F findByID(int id);
-    F save(F newResource);
+    F save(F newStudent);
     boolean update(F updatedResource);
     boolean deleteByID(int id);
 
-    public Student findStudentByCredentials(String username, String password);
+    Faculty findFacultyByUsername(String username);
+    Faculty findFacultyByCredentials(String username, String password);
+    Student findStudentByUsername(String username);
+    Student findStudentByCredentials(String username, String password);
 
-    public Student findStudentByUsername(String username);
-
-    public Faculty findFacultyByCredentials(String username, String password);
-
-    public Faculty findFacultyByUsername(String username);
 }

@@ -26,9 +26,9 @@ public class MongoPOJOTesting {
 
         try {
 
-            MongoDatabase database = mongoClient.getDatabase("StudentCredentials").withCodecRegistry(pojoCodecRegistry);
+            MongoDatabase database = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
             MongoCollection<Student> collection = database.getCollection("StudentCredentials", Student.class);
-            Student student = collection.find(eq("username", "Test User")).first();
+            Student student = collection.find(eq("username", "Test1")).first();
             System.out.println(student);
 
             Student newStudent = new Student("troubleShooter", "P455w0rd",

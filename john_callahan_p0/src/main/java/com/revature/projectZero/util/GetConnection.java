@@ -5,7 +5,7 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import com.revature.projectZero.exceptions.ResourcePersistenceException;
+import com.revature.projectZero.util.exceptions.ResourcePersistenceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import static com.revature.projectZero.util.AppState.closeApp;
