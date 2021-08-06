@@ -31,7 +31,7 @@ public class AppState {
                 .addPage(new LoginPage(reader, router, checker))
                 .addPage(new StudentRegisterPage(reader, router, checker))
                 .addPage(new StudentDashboard(reader, router, checker))
-                .addPage(new FacultyDashboard(reader, router));
+                .addPage(new FacultyDashboard(reader, router, checker));
     }
 
     // The beating heart of the application. So long as appRunning is true,

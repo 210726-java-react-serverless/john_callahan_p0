@@ -158,7 +158,7 @@ public class SchoolRepository implements CrudRepository {
 
         try {
             MongoDatabase p0school = mongoClient.getDatabase("Project0School");
-            MongoCollection<Document> usersCollection = p0school.getCollection("StudentCredentials");
+            MongoCollection<Document> usersCollection = p0school.getCollection("FacultyCredentials");
             Document queryDoc = new Document("username", username).append("hashPass", hashPass);
             Document userCredentials = usersCollection.find(queryDoc).first();
 

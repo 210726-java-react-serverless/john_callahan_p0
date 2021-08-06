@@ -25,7 +25,7 @@ public class StudentDashboard extends Page{
             return;
         }
 
-        System.out.println("Welcome to the Student Dashboard, " + currentStudent.getFirstName() + "!");
+        System.out.println("Welcome to the Student Dashboard!");
         System.out.print("\nWhat would you like to do?"
                 + "\n1) View 'My Classes'"
                 + "\n2) View all courses"
@@ -47,9 +47,13 @@ public class StudentDashboard extends Page{
                 return;
             case "Logout":
             case "3":
+            case "exit":
             case "logout":
                 router.navigate("/welcome");
                 checker.logout();
+                return;
+            default:
+                System.out.println("Sorry! We didn't quite catch that..");
         }
     }
 }

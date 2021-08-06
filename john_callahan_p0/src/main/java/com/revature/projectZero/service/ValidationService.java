@@ -22,11 +22,7 @@ public class ValidationService {
         private Student authStudent;
         private Faculty authFac;
 
-        public void logout() {
-                this.isValid = false;
-        }
-
-        public Student register(Student newStudent) throws Exception {
+        public void register(Student newStudent) throws Exception {
                 if (!isUserValid(newStudent)) {
                         throw new InvalidRequestException("Invalid user data provided!");
                 }
@@ -35,7 +31,14 @@ public class ValidationService {
                         throw new ResourcePersistenceException("Provided username is already taken!");
                 }
 
-                return schoolRepo.save(newStudent);
+                schoolRepo.save(newStudent);
+        }
+
+        // Wipes user data and sets the session to an invalid one.
+        public void logout() {
+                this.isValid = false;
+                this.authStudent = null;
+                this.authFac = null;
         }
 
         public Student login(String username, int hashPass) throws Exception {
@@ -46,10 +49,11 @@ public class ValidationService {
                 // This ensures that the session is marked 'valid'.
                 this.isValid = true;
 
-                Student authStudent = schoolRepo.findStudentByCredentials(username, hashPass);
-                return authStudent;
+                this.authStudent = schoolRepo.findStudentByCredentials(username, hashPass);
+                return this.authStudent;
         }
 
+        // Sends Student data to the requested location
         public Student getStudent() {
                 if(this.authStudent != null || this.isValid) {
                         return this.authStudent;
@@ -63,9 +67,17 @@ public class ValidationService {
                         throw new InvalidRequestException("Invalid user credentials provided!");
                 }
 
-                Faculty authFac = schoolRepo.findFacultyByCredentials(username, hashPass);
-                return authFac;
-                // TODO: Persist this into the Faculty dashboard.
+                this.authFac = schoolRepo.findFacultyByCredentials(username, hashPass);
+                return this.authFac;
+        }
+
+        // Sends faculty user data to the requested location
+        public Faculty getAuthFac() {
+                if(this.authFac != null || this.isValid) {
+                        return this.authFac;
+                } else {
+                        return null;
+                }
         }
 
 
