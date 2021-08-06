@@ -32,7 +32,8 @@ public class FacultyDashboard extends Page {
                         + "\n1) Add a new class to the catalogue"
                         + "\n2) Change the registration details for a class"
                         + "\n3) Remove a class from the catalog"
-                        + "\n4) Logout"
+                        + "\n4) View Catalogue"
+                        + "\n5) Logout"
                         + "\n> ");
         String input = reader.readLine();
 
@@ -58,7 +59,13 @@ public class FacultyDashboard extends Page {
                 System.out.println("Directing you to the Class Deletion portal...");
                 router.navigate("/facDelete"); // TODO: Make the facDelete portal
                 return;
+            case "view":
             case "4":
+            case "catalogue":
+            case "View":
+                router.navigate("/facView"); // TODO: Make the /facview catalog!
+                return;
+            case "5":
             case "Logout":
             case "exit":
             case "logout":

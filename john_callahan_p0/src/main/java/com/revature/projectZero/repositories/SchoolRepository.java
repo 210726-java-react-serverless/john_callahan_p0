@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.revature.projectZero.pojos.Course;
 import com.revature.projectZero.pojos.Faculty;
 import com.revature.projectZero.pojos.Student;
 import com.revature.projectZero.util.GetMongoClient;
@@ -14,6 +15,9 @@ import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+
+import java.util.List;
+
 import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
 import static com.revature.projectZero.util.GetMongoClient.generate;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -97,6 +101,21 @@ public class SchoolRepository implements CrudRepository {
             logger.error("Threw an exception at SchoolRepository::findStudentByCredentials(), full StackTrace follows: " + e);
         }
 
+        return null;
+    }
+
+    @Override
+    public List<Course> findCourseByOpen(boolean isOpen) { // TODO: Implement findCourseByOpen!
+        return null;
+    }
+
+    @Override
+    public List<Course> findCourseByUsername(String username) { // TODO: Implement findCourseByUsername!
+        return null;
+    }
+
+    @Override
+    public List<Course> findCourseByTeacher(String lastName) { // TODO: Implement findCourseByTeacher!
         return null;
     }
 

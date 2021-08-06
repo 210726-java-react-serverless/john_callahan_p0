@@ -7,8 +7,11 @@ package com.revature.projectZero.repositories;
         I believe this code is one great example of this, since it can be passed anything as 'F'.
  */
 
+import com.revature.projectZero.pojos.Course;
 import com.revature.projectZero.pojos.Faculty;
 import com.revature.projectZero.pojos.Student;
+
+import java.util.List;
 
 public interface CrudRepository<F> {
     F findByID(int id);
@@ -19,5 +22,7 @@ public interface CrudRepository<F> {
     Faculty findFacultyByCredentials(String username, int password);
     Student findStudentByUsername(String username);
     Student findStudentByCredentials(String username, int password);
-
+    List<Course> findCourseByOpen(boolean isOpen);
+    List<Course> findCourseByUsername(String username);
+    List<Course> findCourseByTeacher(String lastName);
 }
