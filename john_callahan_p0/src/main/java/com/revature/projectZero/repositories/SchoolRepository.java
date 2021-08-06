@@ -78,9 +78,8 @@ public class SchoolRepository implements CrudRepository {
     public Student findStudentByCredentials(String username, int hashPass) {
 
         try {
-            System.out.println(hashPass);
-            MongoDatabase bookstoreDatabase = mongoClient.getDatabase("Project0School");
-            MongoCollection<Document> usersCollection = bookstoreDatabase.getCollection("StudentCredentials");
+            MongoDatabase p0school = mongoClient.getDatabase("Project0School");
+            MongoCollection<Document> usersCollection = p0school.getCollection("StudentCredentials");
             Document queryDoc = new Document("username", username).append("hashPass", hashPass);
             Document userCredentials = usersCollection.find(queryDoc).first();
 
@@ -103,8 +102,8 @@ public class SchoolRepository implements CrudRepository {
 
     @Override
     public Student findStudentByUsername(String username)  {
-        MongoDatabase bookstoreDatabase = mongoClient.getDatabase("Project0School");
-        MongoCollection<Document> usersCollection = bookstoreDatabase.getCollection("StudentCredentials");
+        MongoDatabase p0school = mongoClient.getDatabase("Project0School");
+        MongoCollection<Document> usersCollection = p0school.getCollection("StudentCredentials");
         Document queryDoc = new Document("username", username);
         Document isUsernameTaken = usersCollection.find(queryDoc).first();
 
@@ -129,8 +128,8 @@ public class SchoolRepository implements CrudRepository {
     }
 
     public Student findStudentByEmail(String email)  {
-        MongoDatabase bookstoreDatabase = mongoClient.getDatabase("Project0School");
-        MongoCollection<Document> usersCollection = bookstoreDatabase.getCollection("StudentCredentials");
+        MongoDatabase p0school = mongoClient.getDatabase("Project0School");
+        MongoCollection<Document> usersCollection = p0school.getCollection("StudentCredentials");
         Document queryDoc = new Document("email", email);
         Document isEmailTaken = usersCollection.find(queryDoc).first();
 
@@ -155,12 +154,28 @@ public class SchoolRepository implements CrudRepository {
     }
 
     @Override
-    public Faculty findFacultyByCredentials(String username, String password) {
-        return null;
-    }
+    public Faculty findFacultyByCredentials(String username, int hashPass){
 
-    @Override
-    public Faculty findFacultyByUsername(String username) {
+        try {
+            MongoDatabase p0school = mongoClient.getDatabase("Project0School");
+            MongoCollection<Document> usersCollection = p0school.getCollection("StudentCredentials");
+            Document queryDoc = new Document("username", username).append("hashPass", hashPass);
+            Document userCredentials = usersCollection.find(queryDoc).first();
+
+            if (userCredentials == null) {
+                return null;
+            }
+
+            Faculty authFac = mapper.readValue(userCredentials.toJson(), Faculty.class);
+            authFac.setTeacherID(userCredentials.get("_id").toString());
+
+            return authFac;
+
+        } catch(Exception e) {
+            logger.error(e.getMessage());
+            logger.error("Threw an exception at SchoolRepository::findStudentByCredentials(), full StackTrace follows: " + e);
+        }
+
         return null;
     }
 }

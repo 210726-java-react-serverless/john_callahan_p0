@@ -7,40 +7,25 @@ import java.util.Objects;
 @JsonIgnoreProperties (ignoreUnknown = true)
 public class Faculty {
 
-    private int teacherID;
+    private String teacherID;
     private String firstName;
     private String lastName;
     private String email;
     private String username;
-    private String password;
+    private int hashPass;
 
     // public empty constructor is needed to retrieve the POJO
     public Faculty(){}
 
-    public Faculty(String username, String password) {
+    public Faculty(String username, int password, String firstName, String lastName, String email) {
         this.username = username;
-        this.password = password;
-    }
-
-    public Faculty(String username, String password, String firstName, String lastName, String email) {
-        this(username, password);
+        this.hashPass = password;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public Faculty(String username, String password, String firstName, String lastName, String email, int id) {
-        this(firstName, lastName, email, username, password);
-        this.teacherID = id;
-    }
 
-    public int getTeacherID() {
-        return teacherID;
-    }
-
-    public void setTeacherID(int teacherID) {
-        this.teacherID = teacherID;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -74,24 +59,32 @@ public class Faculty {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getTeacherID() {
+        return teacherID;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setTeacherID(String teacherID) {
+        this.teacherID = teacherID;
+    }
+
+    public int getHashPass() {
+        return hashPass;
+    }
+
+    public void setHashPass(int hashPass) {
+        this.hashPass = hashPass;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Faculty student = (Faculty) o;
-        return teacherID == student.teacherID && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(email, student.email) && Objects.equals(username, student.username) && Objects.equals(password, student.password);
+        Faculty faculty = (Faculty) o;
+        return hashPass == faculty.hashPass && Objects.equals(teacherID, faculty.teacherID) && Objects.equals(firstName, faculty.firstName) && Objects.equals(lastName, faculty.lastName) && Objects.equals(email, faculty.email) && Objects.equals(username, faculty.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(teacherID, firstName, lastName, email, username, password);
+        return Objects.hash(teacherID, firstName, lastName, email, username, hashPass);
     }
 }

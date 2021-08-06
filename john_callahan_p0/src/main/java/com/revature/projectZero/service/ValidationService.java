@@ -58,12 +58,12 @@ public class ValidationService {
                 }
         }
 
-        public Faculty facLogin(String username, String password) throws Exception {
-                if (username == null || username.trim().equals("") || password == null || password.trim().equals("")) {
+        public Faculty facLogin(String username, int hashPass) throws Exception {
+                if (username == null || username.trim().equals("")) {
                         throw new InvalidRequestException("Invalid user credentials provided!");
                 }
 
-                Faculty authFac = schoolRepo.findFacultyByCredentials(username, password);
+                Faculty authFac = schoolRepo.findFacultyByCredentials(username, hashPass);
                 return authFac;
                 // TODO: Persist this into the Faculty dashboard.
         }
