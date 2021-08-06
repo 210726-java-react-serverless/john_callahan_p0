@@ -50,7 +50,6 @@ public class StudentDashboard extends Page{
             case "logout":
                 router.navigate("/welcome");
                 checker.logout();
-                return;
         }
     }
 }
