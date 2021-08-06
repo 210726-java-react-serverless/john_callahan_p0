@@ -3,6 +3,9 @@ package com.revature.projectZero.util;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import com.revature.projectZero.pages.*;
+import com.revature.projectZero.pages.faculty.FacultyDashboard;
+import com.revature.projectZero.pages.student.StudentDashboard;
+import com.revature.projectZero.pages.student.StudentRegisterPage;
 import com.revature.projectZero.repositories.SchoolRepository;
 import com.revature.projectZero.service.ValidationService;
 import org.apache.logging.log4j.LogManager;
@@ -31,7 +34,7 @@ public class AppState {
                 .addPage(new LoginPage(reader, router, checker))
                 .addPage(new StudentRegisterPage(reader, router, checker))
                 .addPage(new StudentDashboard(reader, router, checker))
-                .addPage(new FacultyDashboard(reader, router));
+                .addPage(new FacultyDashboard(reader, router, checker));
     }
 
     // The beating heart of the application. So long as appRunning is true,

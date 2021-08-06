@@ -16,8 +16,7 @@ public interface CrudRepository<F> {
     boolean update(F updatedResource);
     boolean deleteByID(int id);
 
-    Faculty findFacultyByUsername(String username);
-    Faculty findFacultyByCredentials(String username, String password);
+    Faculty findFacultyByCredentials(String username, int password);
     Student findStudentByUsername(String username);
     Student findStudentByCredentials(String username, int password);
 
