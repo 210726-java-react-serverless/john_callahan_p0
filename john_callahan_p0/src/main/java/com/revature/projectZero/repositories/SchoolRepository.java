@@ -14,9 +14,7 @@ import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
-
 import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
-import static com.mongodb.client.model.Filters.eq;
 import static com.revature.projectZero.util.GetConnection.generate;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -55,8 +53,6 @@ public class SchoolRepository implements CrudRepository {
         try {
             MongoDatabase database = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
             MongoCollection<Student> collection = database.getCollection("StudentCredentials", Student.class);
-            Student student = collection.find(eq("username", "Test1")).first();
-            System.out.println(student);
 
             // this inserts the instance into the "StudentCredentials" database.
             collection.insertOne(newStudent);

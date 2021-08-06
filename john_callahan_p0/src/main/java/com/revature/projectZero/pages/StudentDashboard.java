@@ -12,5 +12,7 @@ public class StudentDashboard extends Page{
     public void render() throws Exception {
         System.out.println("The Student Dashboard works!");
         // TODO: Finish student dashboard
+        reader.readLine();
+        router.navigate("/welcome");
     }
 }

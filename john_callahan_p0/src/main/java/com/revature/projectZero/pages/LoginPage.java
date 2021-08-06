@@ -78,8 +78,7 @@ public class LoginPage extends Page {
                 System.out.print("\nPlease enter your Password: ");
                 password = reader.readLine();
 
-
-                //TODO: Instate Faculty login logic here!
+                // Attempts to check the user-input data against the Faculty database.
                 Faculty authFac = checker.facLogin(username, password);
 
                 if(authFac != null){
@@ -108,10 +107,14 @@ public class LoginPage extends Page {
                     System.out.print("\nPlease enter your Password: ");
                     password = reader.readLine();
 
-
-                    // TODO: Instate Student Login logic here!
+                    // Attempts to check the user-input data against the Student database.
                     Student authStudent = checker.login(username, password);
 
+                    if (authStudent != null) {
+                        System.out.println("Login Successful! Welcome back, " + authStudent.getFirstName() + "!");
+                        router.navigate("/s_dashboard");
+                        return;
+                    }
 
                     // This is a simple counter, added as a sort of sobriety test for
                     // the Student's wishes. It is also a way to get out of logging in, rather
@@ -123,7 +126,7 @@ public class LoginPage extends Page {
                         + "Y/N: ");
                 input = reader.readLine();
                 // checks user input and learns whether or not the user wishes to be on this login screen.
-                if(input == "n" || input == "N"){
+                if(input.equals("n") || input.equals("N")){
                     wantsToBeHere = false;
                 }
             }

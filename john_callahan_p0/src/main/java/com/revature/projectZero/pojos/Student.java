@@ -1,8 +1,6 @@
 package com.revature.projectZero.pojos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.bson.types.ObjectId;
-
 import java.util.Objects;
 
 @JsonIgnoreProperties (ignoreUnknown = true)
@@ -18,20 +16,12 @@ public class Student {
     // public empty constructor is needed to retrieve the POJO
     public Student(){}
 
-    public Student(String username, String password) {
+    public Student(String username, String password, String firstName, String lastName, String email) {
         this.username = username;
         this.password = password;
-    }
-
-    public Student(String username, String password, String firstName, String lastName, String email) {
-        this(username, password);
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-    }
-
-    public Student(String username, String password, String firstName, String lastName, String email, int id) {
-        this(firstName, lastName, email, username, password);
     }
 
     public String getStudentID() {

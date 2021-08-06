@@ -4,10 +4,10 @@ import com.revature.projectZero.util.AppState;
 
 public class App {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         AppState app = new AppState();
         app.startApp();
     }
 }
 
-// TODO: Go through all of your code and change the comments to be more colorful and easier to read.
+// TODO: Go through all of your code and supply proper javadoc documentation
