@@ -1,12 +1,13 @@
-package com.revature.projectZero.pages;
+package com.revature.projectZero.pages.faculty;
 
+import com.revature.projectZero.pages.Page;
 import com.revature.projectZero.pojos.Faculty;
 import com.revature.projectZero.service.ValidationService;
 import com.revature.projectZero.util.PageRouter;
 
 import java.io.BufferedReader;
 
-public class FacultyDashboard extends Page{
+public class FacultyDashboard extends Page {
 
     private final ValidationService checker;
 

@@ -1,12 +1,13 @@
-package com.revature.projectZero.pages;
+package com.revature.projectZero.pages.student;
 
+import com.revature.projectZero.pages.Page;
 import com.revature.projectZero.pojos.Student;
 import com.revature.projectZero.service.ValidationService;
 import com.revature.projectZero.util.PageRouter;
 
 import java.io.BufferedReader;
 
-public class StudentDashboard extends Page{
+public class StudentDashboard extends Page {
     ValidationService checker;
 
     public StudentDashboard(BufferedReader reader, PageRouter router, ValidationService checker) {
