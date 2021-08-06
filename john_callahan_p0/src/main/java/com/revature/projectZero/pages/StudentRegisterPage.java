@@ -47,7 +47,7 @@ public class StudentRegisterPage extends Page {
             email = reader.readLine();
         }
 
-
+        // The 'is user unique' while loop functions nominally.
         System.out.print("\nUsername: ");
         String username = reader.readLine();
         while (!checker.isUserUnique(username)) {

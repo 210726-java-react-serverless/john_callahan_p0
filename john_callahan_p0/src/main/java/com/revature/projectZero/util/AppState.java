@@ -30,7 +30,7 @@ public class AppState {
         router.addPage(new WelcomePage(reader, router, this))
                 .addPage(new LoginPage(reader, router, checker))
                 .addPage(new StudentRegisterPage(reader, router, checker))
-                .addPage(new StudentDashboard(reader, router))
+                .addPage(new StudentDashboard(reader, router, checker))
                 .addPage(new FacultyDashboard(reader, router));
     }
 
