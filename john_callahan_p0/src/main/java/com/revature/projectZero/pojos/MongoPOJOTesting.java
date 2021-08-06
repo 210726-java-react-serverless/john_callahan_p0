@@ -5,7 +5,7 @@ import static com.mongodb.client.model.Filters.eq;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
-import com.revature.projectZero.util.GetConnection;
+import com.revature.projectZero.util.GetMongoClient;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -21,7 +21,7 @@ public class MongoPOJOTesting {
         CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
         CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
 
-        GetConnection connection = GetConnection.generate();
+        GetMongoClient connection = GetMongoClient.generate();
         MongoClient mongoClient = connection.getConnection();
 
         try {
