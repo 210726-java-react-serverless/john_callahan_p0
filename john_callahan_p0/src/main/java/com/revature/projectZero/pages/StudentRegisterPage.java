@@ -41,7 +41,7 @@ public class StudentRegisterPage extends Page {
         System.out.print("\nEmail: ");
         String email = reader.readLine();
 
-        // TODO: Fix "Is username taken?" While loop.
+
         System.out.print("\nUsername: ");
         String username = reader.readLine();
         while (!checker.isUserUnique(username)) {
@@ -52,15 +52,16 @@ public class StudentRegisterPage extends Page {
 
         System.out.print("\nPassword: ");
         String password = reader.readLine();
+        int hashPass = password.hashCode();
 
-        Student newStudent = new Student(username, password, firstname, lastname, email);
+        Student newStudent = new Student(username, hashPass, firstname, lastname, email);
 
 
         try {
             checker.register(newStudent);
             logger.info("New user successfully registered! " + newStudent);
             System.out.println("Great! Sending you to the student dashboard...");
-            checker.login(newStudent.getUsername(), newStudent.getPassword());
+            checker.login(newStudent.getUsername(), newStudent.getHashPass());
             router.navigate("/s_dashboard");
         } catch(Exception e) {
             logger.error(e.getMessage());

@@ -11,14 +11,14 @@ public class Student {
     private String lastName;
     private String email;
     private String username;
-    private String password;
+    private int hashPass;
 
     // public empty constructor is needed to retrieve the POJO
     public Student(){}
 
-    public Student(String username, String password, String firstName, String lastName, String email) {
+    public Student(String username, int password, String firstName, String lastName, String email) {
         this.username = username;
-        this.password = password;
+        this.hashPass = password;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -64,12 +64,12 @@ public class Student {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public int getHashPass() {
+        return hashPass;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setHashPass(int hashPass) {
+        this.hashPass = hashPass;
     }
 
     @Override
@@ -77,12 +77,12 @@ public class Student {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return Objects.equals(studentID, student.studentID) && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(email, student.email) && Objects.equals(username, student.username) && Objects.equals(password, student.password);
+        return Objects.equals(studentID, student.studentID) && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(email, student.email) && Objects.equals(username, student.username) && Objects.equals(hashPass, student.hashPass);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(studentID, firstName, lastName, email, username, password);
+        return Objects.hash(studentID, firstName, lastName, email, username, hashPass);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class Student {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                ", password='" + hashPass + '\'' +
                 '}';
     }
 }

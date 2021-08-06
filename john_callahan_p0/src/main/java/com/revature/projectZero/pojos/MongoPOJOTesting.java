@@ -31,10 +31,8 @@ public class MongoPOJOTesting {
             Student student = collection.find(eq("username", "Test1")).first();
             System.out.println(student);
 
-            Student newStudent = new Student("troubleShooter", "P455w0rd",
-                    "Test", "Testerson", "Test@text.com");
-            // insert the instance
-            collection.insertOne(newStudent);
+
+
             // return all documents in the collection
             List<Student> studentData = new ArrayList<>();
             collection.find().into(studentData);
