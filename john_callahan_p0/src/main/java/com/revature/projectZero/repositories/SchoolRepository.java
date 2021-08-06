@@ -7,7 +7,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.revature.projectZero.pojos.Faculty;
 import com.revature.projectZero.pojos.Student;
-import com.revature.projectZero.util.GetConnection;
+import com.revature.projectZero.util.GetMongoClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
@@ -15,7 +15,7 @@ import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
-import static com.revature.projectZero.util.GetConnection.generate;
+import static com.revature.projectZero.util.GetMongoClient.generate;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
@@ -28,7 +28,7 @@ public class SchoolRepository implements CrudRepository {
 
     // These are used quite often in the CRUD methods.
     Logger logger = LogManager.getLogger(SchoolRepository.class);
-    private final GetConnection connection = generate();
+    private final GetMongoClient connection = generate();
     private final MongoClient mongoClient = connection.getConnection();
     private final ObjectMapper mapper = new ObjectMapper();
     CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
@@ -58,8 +58,8 @@ public class SchoolRepository implements CrudRepository {
             collection.insertOne(newStudent);
 
         } catch(Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage());
+            logger.error("Threw an exception at SchoolRepository::save(), full StackTrace follows: " + e);
         }
         return newStudent;
     }
@@ -95,6 +95,7 @@ public class SchoolRepository implements CrudRepository {
 
         } catch(Exception e) {
             logger.error(e.getMessage());
+            logger.error("Threw an exception at SchoolRepository::findStudentByCredentials(), full StackTrace follows: " + e);
         }
 
         return null;
@@ -120,8 +121,8 @@ public class SchoolRepository implements CrudRepository {
             }
 
         } catch( JsonProcessingException jse) {
-            jse.printStackTrace();
             logger.error(jse.getMessage());
+            logger.error("Threw a JsonProcessingException at SchoolRepository::isUsernameTaken, full StackTrace follows: " + jse);
         }
 
         return student;
