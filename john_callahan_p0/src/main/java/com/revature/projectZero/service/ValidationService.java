@@ -18,7 +18,7 @@ public class ValidationService {
         private final SchoolRepository schoolRepo;
         public ValidationService(SchoolRepository studentRepo){ this.schoolRepo = studentRepo; }
 
-        private boolean isValid = false;
+        private boolean isValid = true;
         private Student authStudent;
         private Faculty authFac;
 

@@ -85,6 +85,7 @@ public class LoginPage extends Page {
                 if(authFac != null){
                     System.out.println("Login successful! Welcome back, " + authFac.getFirstName() + "!");
                     router.navigate("/f_dashboard");
+                    return;
                 }
             }
             // This is the "game over" message that displays if you fail to validate as
