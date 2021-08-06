@@ -62,4 +62,8 @@ public class ValidationService {
         public boolean isUserUnique(String username) {
                 return schoolRepo.findStudentByUsername(username) == null;
         }
+
+        public boolean isEmailUnique(String email) {
+                return schoolRepo.findStudentByEmail(email) == null;
+        }
 }

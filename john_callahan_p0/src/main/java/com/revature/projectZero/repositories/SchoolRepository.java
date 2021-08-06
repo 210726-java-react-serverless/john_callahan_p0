@@ -61,7 +61,7 @@ public class SchoolRepository implements CrudRepository {
             logger.error(e.getMessage());
             logger.error("Threw an exception at SchoolRepository::save(), full StackTrace follows: " + e);
         }
-        return newStudent;
+        return null;
     }
 
     @Override
@@ -123,6 +123,32 @@ public class SchoolRepository implements CrudRepository {
         } catch( JsonProcessingException jse) {
             logger.error(jse.getMessage());
             logger.error("Threw a JsonProcessingException at SchoolRepository::isUsernameTaken, full StackTrace follows: " + jse);
+        }
+
+        return student;
+    }
+
+    public Student findStudentByEmail(String email)  {
+        MongoDatabase bookstoreDatabase = mongoClient.getDatabase("Project0School");
+        MongoCollection<Document> usersCollection = bookstoreDatabase.getCollection("StudentCredentials");
+        Document queryDoc = new Document("email", email);
+        Document isEmailTaken = usersCollection.find(queryDoc).first();
+
+
+        try {
+            if (isEmailTaken != null) {
+                String json = isEmailTaken.toJson();
+                Student student = mapper.readValue(json, Student.class);
+                student.setStudentID(isEmailTaken.get("_id").toString());
+                this.student = student;
+
+            } else {
+                return null;
+            }
+
+        } catch( JsonProcessingException jse) {
+            logger.error(jse.getMessage());
+            logger.error("Threw a JsonProcessingException at SchoolRepository::isEmailTaken, full StackTrace follows: " + jse);
         }
 
         return student;

@@ -40,6 +40,12 @@ public class StudentRegisterPage extends Page {
 
         System.out.print("\nEmail: ");
         String email = reader.readLine();
+        while(!checker.isEmailUnique(email)) {
+            System.out.print("\nSorry! That Email already belongs to an account!"
+                        + "\nPlease enter another one."
+                        + "\nEmail: ");
+            email = reader.readLine();
+        }
 
 
         System.out.print("\nUsername: ");
