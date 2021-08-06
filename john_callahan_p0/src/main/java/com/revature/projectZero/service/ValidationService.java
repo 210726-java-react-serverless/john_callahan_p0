@@ -18,6 +18,14 @@ public class ValidationService {
         private final SchoolRepository schoolRepo;
         public ValidationService(SchoolRepository studentRepo){ this.schoolRepo = studentRepo; }
 
+        private boolean isValid = false;
+        private Student authStudent;
+        private Faculty authFac;
+
+        public void logout() {
+                this.isValid = false;
+        }
+
         public Student register(Student newStudent) throws Exception {
                 if (!isUserValid(newStudent)) {
                         throw new InvalidRequestException("Invalid user data provided!");
@@ -35,7 +43,19 @@ public class ValidationService {
                         throw new InvalidRequestException("Invalid user credentials provided!");
                 }
 
-                return schoolRepo.findStudentByCredentials(username, hashPass);
+                // This ensures that the session is marked 'valid'.
+                this.isValid = true;
+
+                Student authStudent = schoolRepo.findStudentByCredentials(username, hashPass);
+                return authStudent;
+        }
+
+        public Student getStudent() {
+                if(this.authStudent != null || this.isValid) {
+                        return this.authStudent;
+                } else {
+                        return null;
+                }
         }
 
         public Faculty facLogin(String username, String password) throws Exception {
@@ -43,8 +63,9 @@ public class ValidationService {
                         throw new InvalidRequestException("Invalid user credentials provided!");
                 }
 
-                return schoolRepo.findFacultyByCredentials(username, password);
-
+                Faculty authFac = schoolRepo.findFacultyByCredentials(username, password);
+                return authFac;
+                // TODO: Persist this into the Faculty dashboard.
         }
 
 
