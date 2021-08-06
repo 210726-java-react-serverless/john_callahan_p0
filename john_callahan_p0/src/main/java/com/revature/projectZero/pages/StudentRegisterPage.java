@@ -58,7 +58,7 @@ public class StudentRegisterPage extends Page {
 
         try {
             checker.register(newStudent);
-            logger.info("New user successfully registered!" + newStudent);
+            logger.info("New user successfully registered! " + newStudent);
             System.out.println("Great! Sending you to the student dashboard...");
             checker.login(newStudent.getUsername(), newStudent.getPassword());
             router.navigate("/s_dashboard");
