@@ -13,40 +13,51 @@ import java.io.FileReader;
 import java.util.Arrays;
 import java.util.Properties;
 
+/**
+    This is a Singleton Factory that pumps out connection data for the Mongo Database.
+    Its goal is to reduce the amount of time a developer needs to repeat themselves a million-fold.
+    Simply call the 'generate()' method to have an instance of the class,
+    then request a uri through 'getConnection'.
+ */
+
 public class GetConnection {
 
+    // Initialization of variables
     private static GetConnection connection = null;
     private final String ipAddress;
-    private final String username;
-    private final String dbName;
-    private final String password;
     private final int port;
     private MongoClient mongoClient;
 
+    // Static implementation of Logger to work with the getConnection() method.
+    static Logger logger = LogManager.getLogger(GetConnection.class);
+
     private GetConnection() throws Exception {
 
+        // Find the '.properties' file and read the data from it.
         Properties appProperties = new Properties();
 
         try {
-            appProperties.load(new FileReader("src/main/resources/application.properties"));
+            appProperties.load(new FileReader("john_callahan_p0/src/main/resources/applicationProperties.properties"));
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ResourcePersistenceException("Unable to load properties file.");
+            throw new ResourcePersistenceException("Unable to load the properties file.");
         }
         ipAddress = appProperties.getProperty("ipAddress");
         port = Integer.parseInt(appProperties.getProperty("port"));
-        dbName = appProperties.getProperty("dbName");
-        username = appProperties.getProperty("username");
-        password = appProperties.getProperty("password");
+        String dbName = appProperties.getProperty("dbName");
+        String username = appProperties.getProperty("username");
+        String password = appProperties.getProperty("password");
 
+        // Compile all of the data from the properties file into a MongoClient called, for simplicity, 'mongoClient'.
         try {
             this.mongoClient = MongoClients.create(
                     MongoClientSettings.builder()
                             .applyToClusterSettings(builder -> builder.hosts(Arrays.asList(new ServerAddress(ipAddress, port))))
                             .credential(MongoCredential.createScramSha1Credential(username, dbName, password.toCharArray()))
                             .build());
-        } catch (Exception e) {
+        } catch (Exception e) { // TODO: Fix this asList warning, it is kind of annoying.
             e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -57,7 +68,6 @@ public class GetConnection {
             try {
                 connection = new GetConnection();
             } catch(Exception e) {
-                Logger logger = LogManager.getLogger(GetConnection.class);
                 logger.error(e.getMessage());
                 System.out.println("Sorry! We could not find your properties file.");
                 closeApp();

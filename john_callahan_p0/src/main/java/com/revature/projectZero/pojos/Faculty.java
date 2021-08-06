@@ -1,7 +1,10 @@
 package com.revature.projectZero.pojos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Objects;
 
+@JsonIgnoreProperties (ignoreUnknown = true)
 public class Faculty {
 
     private int teacherID;
