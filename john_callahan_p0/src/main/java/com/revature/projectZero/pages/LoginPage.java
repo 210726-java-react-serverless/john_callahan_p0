@@ -106,9 +106,10 @@ public class LoginPage extends Page {
                     username = reader.readLine();
                     System.out.print("\nPlease enter your Password: ");
                     password = reader.readLine();
+                    int hashPass = password.hashCode();
 
                     // Attempts to check the user-input data against the Student database.
-                    Student authStudent = checker.login(username, password);
+                    Student authStudent = checker.login(username, hashPass);
 
                     if (authStudent != null) {
                         System.out.println("Login Successful! Welcome back, " + authStudent.getFirstName() + "!");

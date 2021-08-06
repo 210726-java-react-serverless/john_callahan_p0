@@ -30,12 +30,12 @@ public class ValidationService {
                 return schoolRepo.save(newStudent);
         }
 
-        public Student login(String username, String password) throws Exception {
-                if (username == null || username.trim().equals("") || password == null || password.trim().equals("")) {
+        public Student login(String username, int hashPass) throws Exception {
+                if (username == null || username.trim().equals("")) {
                         throw new InvalidRequestException("Invalid user credentials provided!");
                 }
 
-                return schoolRepo.findStudentByCredentials(username, password);
+                return schoolRepo.findStudentByCredentials(username, hashPass);
         }
 
         public Faculty facLogin(String username, String password) throws Exception {
@@ -56,7 +56,7 @@ public class ValidationService {
                 if (user.getEmail() == null || user.getEmail().trim().equals("")) return false;
                 if (user.getUsername() == null || user.getUsername().trim().equals("")) return false;
                 this.isUserUnique(user.getUsername());
-                return user.getPassword() != null && !user.getPassword().trim().equals("");
+                return true;
         }
 
         public boolean isUserUnique(String username) {

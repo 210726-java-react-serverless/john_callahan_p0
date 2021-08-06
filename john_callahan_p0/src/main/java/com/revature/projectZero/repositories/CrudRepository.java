@@ -19,6 +19,6 @@ public interface CrudRepository<F> {
     Faculty findFacultyByUsername(String username);
     Faculty findFacultyByCredentials(String username, String password);
     Student findStudentByUsername(String username);
-    Student findStudentByCredentials(String username, String password);
+    Student findStudentByCredentials(String username, int password);
 
 }

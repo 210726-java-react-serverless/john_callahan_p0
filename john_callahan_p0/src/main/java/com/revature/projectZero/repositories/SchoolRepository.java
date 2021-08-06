@@ -75,13 +75,13 @@ public class SchoolRepository implements CrudRepository {
     }
 
     @Override
-    public Student findStudentByCredentials(String username, String password) {
+    public Student findStudentByCredentials(String username, int hashPass) {
 
         try {
-
+            System.out.println(hashPass);
             MongoDatabase bookstoreDatabase = mongoClient.getDatabase("Project0School");
             MongoCollection<Document> usersCollection = bookstoreDatabase.getCollection("StudentCredentials");
-            Document queryDoc = new Document("username", username).append("password", password);
+            Document queryDoc = new Document("username", username).append("hashPass", hashPass);
             Document userCredentials = usersCollection.find(queryDoc).first();
 
             if (userCredentials == null) {
