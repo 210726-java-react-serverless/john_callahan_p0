@@ -11,7 +11,7 @@ public class FacultyRead extends Page {
     private final ValidationService checker;
 
     public FacultyRead(BufferedReader reader, PageRouter router, ValidationService checker) {
-        super("FacultyDashboard", "/f_dashboard", reader, router);
+        super("FacultyRead", "/facRead", reader, router);
         this.checker = checker;
     }
 
