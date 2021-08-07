@@ -1,10 +1,13 @@
 package com.revature.projectZero.service;
 
+import com.revature.projectZero.pojos.Course;
 import com.revature.projectZero.util.exceptions.InvalidRequestException;
 import com.revature.projectZero.util.exceptions.ResourcePersistenceException;
 import com.revature.projectZero.pojos.Faculty;
 import com.revature.projectZero.pojos.Student;
 import com.revature.projectZero.repositories.SchoolRepository;
+
+import java.util.List;
 
 /**
     Takes in user data and validates it against a certain criteria. It is then passed to the service that puts
@@ -13,14 +16,13 @@ import com.revature.projectZero.repositories.SchoolRepository;
 
 public class ValidationService {
 
-        // TODO: Get Validation Services working!
-
         private final SchoolRepository schoolRepo;
         public ValidationService(SchoolRepository studentRepo){ this.schoolRepo = studentRepo; }
 
         private boolean isValid = true;
         private Student authStudent;
         private Faculty authFac;
+
 
         public void register(Student newStudent) throws Exception {
                 if (!isUserValid(newStudent)) {
@@ -32,6 +34,16 @@ public class ValidationService {
                 }
 
                 schoolRepo.save(newStudent);
+        }
+
+        // TODO: Instate the createCourse method!
+        public void createCourse() {
+
+        }
+
+        // TODO: Instate the enroll method!
+        public void enroll() {
+
         }
 
         // Wipes user data and sets the session to an invalid one.
@@ -78,6 +90,21 @@ public class ValidationService {
                 } else {
                         return null;
                 }
+        }
+
+        // TODO: Instate the getOpenClasses method!
+        public List<Course> getOpenClasses() {
+                return null;
+        }
+
+        // TODO: Instate the getMyCourses method!
+        public List<Course> getMyCourses() {
+                return null;
+        }
+
+        // TODO: Instate the getTeacherClasses method!
+        public List<Course> getTeacherClasses() {
+                return null;
         }
 
 
