@@ -3,7 +3,7 @@ package com.revature.projectZero.util;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import com.revature.projectZero.pages.*;
-import com.revature.projectZero.pages.faculty.FacultyDashboard;
+import com.revature.projectZero.pages.faculty.*;
 import com.revature.projectZero.pages.student.StudentDashboard;
 import com.revature.projectZero.pages.student.StudentRegisterPage;
 import com.revature.projectZero.repositories.SchoolRepository;
@@ -34,7 +34,11 @@ public class AppState {
                 .addPage(new LoginPage(reader, router, checker))
                 .addPage(new StudentRegisterPage(reader, router, checker))
                 .addPage(new StudentDashboard(reader, router, checker))
-                .addPage(new FacultyDashboard(reader, router, checker));
+                .addPage(new FacultyDashboard(reader, router, checker))
+                .addPage(new FacultyCreate(reader, router, checker))
+                .addPage(new FacultyRead(reader, router, checker))
+                .addPage(new FacultyUpdate(reader, router, checker))
+                .addPage(new FacultyDelete(reader, router, checker));
     }
 
     // The beating heart of the application. So long as appRunning is true,
@@ -50,7 +54,7 @@ public class AppState {
             try {
                 router.getCurrentPage().render();
             } catch (Exception e) {
-                logger.error("User input an invalid value for the field.");
+                logger.error("Page not found. Stack trace follows: ", e);
             }
         }
     }

@@ -1,14 +1,18 @@
 package com.revature.projectZero.pages.faculty;
 
 import com.revature.projectZero.pages.Page;
+import com.revature.projectZero.service.ValidationService;
 import com.revature.projectZero.util.PageRouter;
 
 import java.io.BufferedReader;
 
 public class FacultyUpdate extends Page {
 
-    public FacultyUpdate(String name, String route, BufferedReader reader, PageRouter router) {
-        super(name, route, reader, router);
+    private final ValidationService checker;
+
+    public FacultyUpdate(BufferedReader reader, PageRouter router, ValidationService checker) {
+        super("FacultyDashboard", "/f_dashboard", reader, router);
+        this.checker = checker;
     }
 
     @Override
