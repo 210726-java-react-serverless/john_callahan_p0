@@ -16,6 +16,7 @@ import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
@@ -115,8 +116,28 @@ public class SchoolRepository implements CrudRepository {
     }
 
     @Override
-    public List<Course> findCourseByTeacher(String lastName) { // TODO: Implement findCourseByTeacher!
-        return null;
+    public List<Course> findCourseByTeacher(String lastName) {
+        MongoDatabase p0school = mongoClient.getDatabase("Project0School");
+        MongoCollection<Document> usersCollection = p0school.getCollection("classes");
+        Document queryDoc = new Document("teacher", lastName);
+        List<Document> bsonCourses = new ArrayList<>();
+        usersCollection.find(queryDoc).into(bsonCourses);
+
+        List<Course> courses = new ArrayList<>();
+        try {
+
+            // Iterate over bsonCourses and convert them all to json
+            for (int i =0; i<bsonCourses.size(); i++) {
+                String json = bsonCourses.get(i).toJson();
+                Course currentCourse = mapper.readValue(json, Course.class);
+                courses.add(i, currentCourse);
+            }
+        } catch( JsonProcessingException jse) {
+        logger.error(jse.getMessage());
+        logger.error("Threw a JsonProcessingException at SchoolRepository::isUsernameTaken, full StackTrace follows: " + jse);
+    }
+        return courses;
+
     }
 
     @Override

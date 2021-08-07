@@ -1,7 +1,5 @@
 package com.revature.projectZero.pojos;
 
-import java.util.Objects;
-
 public class Course {
     private String classID;
     private String name;
@@ -58,30 +56,5 @@ public class Course {
 
     public void setOpen(boolean open) {
         isOpen = open;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Course course = (Course) o;
-        return isOpen == course.isOpen && Objects.equals(classID, course.classID) && Objects.equals(name, course.name) && Objects.equals(id, course.id) && Objects.equals(desc, course.desc) && Objects.equals(teacher, course.teacher);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(classID, name, id, desc, teacher, isOpen);
-    }
-
-    @Override
-    public String toString() {
-        return "Course{" +
-                "classID='" + classID + '\'' +
-                ", name='" + name + '\'' +
-                ", id='" + id + '\'' +
-                ", desc='" + desc + '\'' +
-                ", teacher='" + teacher + '\'' +
-                ", isOpen=" + isOpen +
-                '}';
     }
 }
