@@ -61,10 +61,10 @@ public class SchoolRepository {
         }
     }
 
-    public void register(Course course) throws Exception {
+    public void enroll(Enrolled course) throws Exception {
         try {
             MongoDatabase database = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
-            MongoCollection<Course> collection = database.getCollection("enrolled", Course.class);
+            MongoCollection<Enrolled> collection = database.getCollection("enrolled", Enrolled.class);
 
             // this inserts the instance into the "StudentCredentials" database.
             collection.insertOne(course);
@@ -116,10 +116,10 @@ public class SchoolRepository {
     }
 
     // This method is primarily for students to find classes that are accepting new entries.
-    public List<Course> findCourseByOpen(boolean isOpen) {
+    public List<Course> findCourseByOpen() {
         MongoDatabase p0school = mongoClient.getDatabase("Project0School");
         MongoCollection<Document> usersCollection = p0school.getCollection("classes");
-        Document queryDoc = new Document("isOpen", isOpen);
+        Document queryDoc = new Document("isOpen", true);
         List<Document> bsonCourses = new ArrayList<>();
         usersCollection.find(queryDoc).into(bsonCourses);
 
@@ -138,9 +138,16 @@ public class SchoolRepository {
         return courses;
     }
 
+    public Course findCourseByID(String id) {
+        MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
+        MongoCollection<Course> usersCollection = p0school.getCollection("classes", Course.class);
+        Document queryDoc = new Document("id", id);
+        return usersCollection.find(queryDoc).first();
+    }
+
 
     // This is used so that students can see their courses.
-    public List<Enrolled> findCourseByUsername(String username) {
+    public List<Enrolled> findEnrolledByUsername(String username) {
         MongoDatabase p0school = mongoClient.getDatabase("Project0School");
         MongoCollection<Document> usersCollection = p0school.getCollection("enrolled");
         Document queryDoc = new Document("student", username);

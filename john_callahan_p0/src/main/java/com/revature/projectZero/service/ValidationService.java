@@ -1,12 +1,12 @@
 package com.revature.projectZero.service;
 
 import com.revature.projectZero.pojos.Course;
+import com.revature.projectZero.pojos.Enrolled;
 import com.revature.projectZero.util.exceptions.InvalidRequestException;
 import com.revature.projectZero.util.exceptions.ResourcePersistenceException;
 import com.revature.projectZero.pojos.Faculty;
 import com.revature.projectZero.pojos.Student;
 import com.revature.projectZero.repositories.SchoolRepository;
-
 import java.util.List;
 
 /**
@@ -18,7 +18,6 @@ public class ValidationService {
 
         private final SchoolRepository schoolRepo;
         public ValidationService(SchoolRepository studentRepo){ this.schoolRepo = studentRepo; }
-
         private boolean isValid = true;
         private Student authStudent;
         private Faculty authFac;
@@ -36,14 +35,28 @@ public class ValidationService {
                 schoolRepo.save(newStudent);
         }
 
-        // TODO: Instate the createCourse method!
-        public void createCourse() {
-
+        // This will attempt to persist a created course to the courses database.
+        public void createCourse(Course newCourse) {
+                try {
+                        newCourse.setTeacher(this.authFac.getLastName());
+                        schoolRepo.newCourse(newCourse);
+                } catch(Exception e) {
+                        System.out.println(e.getMessage());
+                }
         }
 
-        // TODO: Instate the enroll method!
-        public void enroll() {
+        // This enrolls a student into a course, grafting their username to it,
+        // and placing it within the separate 'enrolled' database.
+        public void enroll(String id) {
+                Course course = schoolRepo.findCourseByID(id);
 
+                Enrolled enrollIn = new Enrolled(course.getClassID(), this.authStudent.getUsername(), course.getName() ,
+                        course.getId(),  course.getDesc(), course.getTeacher());
+                try {
+                        schoolRepo.enroll(enrollIn);
+                } catch(Exception e) {
+                        System.out.println(e.getMessage());
+                }
         }
 
         // Wipes user data and sets the session to an invalid one.
@@ -92,20 +105,14 @@ public class ValidationService {
                 }
         }
 
-        // TODO: Instate the getOpenClasses method!
-        public List<Course> getOpenClasses() {
-                return null;
-        }
+        // This returns all classes that are open for enrollment.
+        public List<Course> getOpenClasses() { return schoolRepo.findCourseByOpen(); }
 
-        // TODO: Instate the getMyCourses method!
-        public List<Course> getMyCourses() {
-                return null;
-        }
+        // This returns all classes associated with a student username.
+        public List<Enrolled> getMyCourses() { return schoolRepo.findEnrolledByUsername(this.authStudent.getUsername()); }
 
-        // TODO: Instate the getTeacherClasses method!
-        public List<Course> getTeacherClasses() {
-                return null;
-        }
+        // This fetches the list of classes associated with a certain teacher name.
+        public List<Course> getTeacherClasses() { return schoolRepo.findCourseByTeacher(this.authFac.getLastName()); }
 
 
         // This verifies that students are valid and fit to be placed in the system.

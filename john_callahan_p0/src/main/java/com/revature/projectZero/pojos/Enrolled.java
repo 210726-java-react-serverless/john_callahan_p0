@@ -14,7 +14,7 @@ public class Enrolled {
     // Empty, no-args constructor is necessary for the POJO to be grabbed my Mongo.
     public Enrolled() {}
 
-    public Enrolled(String classID, String username, String name, String id, String desc, String teacher, boolean isOpen) { }
+    public Enrolled(String classID, String username, String name, String id, String desc, String teacher) { }
 
     public String getClassID() {
         return classID;
