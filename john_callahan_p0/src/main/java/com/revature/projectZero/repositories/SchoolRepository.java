@@ -106,8 +106,27 @@ public class SchoolRepository implements CrudRepository {
     }
 
     @Override
-    public List<Course> findCourseByOpen(boolean isOpen) { // TODO: Implement findCourseByOpen!
-        return null;
+    public List<Course> findCourseByOpen(boolean isOpen) {
+        MongoDatabase p0school = mongoClient.getDatabase("Project0School");
+        MongoCollection<Document> usersCollection = p0school.getCollection("classes");
+        Document queryDoc = new Document("isOpen", isOpen);
+        List<Document> bsonCourses = new ArrayList<>();
+        usersCollection.find(queryDoc).into(bsonCourses);
+
+        List<Course> courses = new ArrayList<>();
+        try {
+
+            // Iterate over bsonCourses and convert them all to json
+            for (int i = 0; i < bsonCourses.size(); i++) {
+                String json = bsonCourses.get(i).toJson();
+                Course currentCourse = mapper.readValue(json, Course.class);
+                courses.add(i, currentCourse);
+            }
+        } catch (JsonProcessingException jse) {
+            logger.error(jse.getMessage());
+            logger.error("Threw a JsonProcessingException at SchoolRepository::isUsernameTaken, full StackTrace follows: " + jse);
+        }
+        return courses;
     }
 
     @Override
