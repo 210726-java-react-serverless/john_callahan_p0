@@ -8,9 +8,8 @@ import com.mongodb.client.MongoClients;
 import com.revature.projectZero.util.exceptions.ResourcePersistenceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import static com.revature.projectZero.util.AppState.closeApp;
 import java.io.FileReader;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 
 /**
@@ -20,18 +19,18 @@ import java.util.Properties;
     then request a uri through 'getConnection'.
  */
 
-public class GetConnection {
+public class GetMongoClient {
 
     // Initialization of variables
-    private static GetConnection connection = null;
+    private static final GetMongoClient connection = new GetMongoClient();
     private final String ipAddress;
     private final int port;
     private MongoClient mongoClient;
 
     // Static implementation of Logger to work with the getConnection() method.
-    static Logger logger = LogManager.getLogger(GetConnection.class);
+    static Logger logger = LogManager.getLogger(GetMongoClient.class);
 
-    private GetConnection() throws Exception {
+    private GetMongoClient() {
 
         // Find the '.properties' file and read the data from it.
         Properties appProperties = new Properties();
@@ -40,7 +39,11 @@ public class GetConnection {
             appProperties.load(new FileReader("john_callahan_p0/src/main/resources/applicationProperties.properties"));
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ResourcePersistenceException("Unable to load the properties file.");
+            try {
+                throw new ResourcePersistenceException("Unable to load the properties file.");
+            } catch (ResourcePersistenceException rpe) {
+                logger.error(rpe.getMessage(), rpe);
+            }
         }
         ipAddress = appProperties.getProperty("ipAddress");
         port = Integer.parseInt(appProperties.getProperty("port"));
@@ -52,28 +55,17 @@ public class GetConnection {
         try {
             this.mongoClient = MongoClients.create(
                     MongoClientSettings.builder()
-                            .applyToClusterSettings(builder -> builder.hosts(Arrays.asList(new ServerAddress(ipAddress, port))))
+                            .applyToClusterSettings(builder -> builder.hosts(Collections.singletonList(new ServerAddress(ipAddress, port))))
                             .credential(MongoCredential.createScramSha1Credential(username, dbName, password.toCharArray()))
                             .build());
-        } catch (Exception e) { // TODO: Fix this asList warning, it is kind of annoying.
-            e.printStackTrace();
+        } catch (Exception e) {
             logger.error(e.getMessage());
+            logger.error("Threw an Exception at GetMongoClient::Constructor, full StackTrace follows: " + e);
         }
     }
 
     // Singleton Design; More than one 'GetConnection' cannot exist at any given time.
-    public static GetConnection generate() {
-
-        if (connection == null) {
-            try {
-                connection = new GetConnection();
-            } catch(Exception e) {
-                logger.error(e.getMessage());
-                System.out.println("Sorry! We could not find your properties file.");
-                closeApp();
-            }
-        }
-
+    public static GetMongoClient generate() {
         return connection;
     }
 

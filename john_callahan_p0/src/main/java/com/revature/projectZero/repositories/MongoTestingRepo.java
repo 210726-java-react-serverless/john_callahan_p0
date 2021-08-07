@@ -1,12 +1,12 @@
 package com.revature.projectZero.repositories;
 
 import static com.mongodb.client.model.Filters.eq;
-import static com.revature.projectZero.util.GetConnection.generate;
+import static com.revature.projectZero.util.GetMongoClient.generate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.projectZero.pojos.Student;
-import com.revature.projectZero.util.GetConnection;
+import com.revature.projectZero.util.GetMongoClient;
 import org.bson.Document;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -15,7 +15,7 @@ import com.mongodb.client.MongoDatabase;
 public class MongoTestingRepo {
 
     public static void main( String[] args ) {
-        final GetConnection connection = generate();
+        final GetMongoClient connection = generate();
         final MongoClient mongoClient = connection.getConnection();
 
         try {

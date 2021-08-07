@@ -1,5 +1,6 @@
-package com.revature.projectZero.pages;
+package com.revature.projectZero.pages.student;
 
+import com.revature.projectZero.pages.Page;
 import com.revature.projectZero.pojos.Student;
 import com.revature.projectZero.service.ValidationService;
 import com.revature.projectZero.util.PageRouter;
@@ -40,8 +41,14 @@ public class StudentRegisterPage extends Page {
 
         System.out.print("\nEmail: ");
         String email = reader.readLine();
+        while(!checker.isEmailUnique(email)) {
+            System.out.print("\nSorry! That Email already belongs to an account!"
+                        + "\nPlease enter another one."
+                        + "\nEmail: ");
+            email = reader.readLine();
+        }
 
-        // TODO: Fix "Is username taken?" While loop.
+        // The 'is user unique' while loop functions nominally.
         System.out.print("\nUsername: ");
         String username = reader.readLine();
         while (!checker.isUserUnique(username)) {
@@ -52,15 +59,16 @@ public class StudentRegisterPage extends Page {
 
         System.out.print("\nPassword: ");
         String password = reader.readLine();
+        int hashPass = password.hashCode();
 
-        Student newStudent = new Student(username, password, firstname, lastname, email);
+        Student newStudent = new Student(username, hashPass, firstname, lastname, email);
 
 
         try {
             checker.register(newStudent);
             logger.info("New user successfully registered! " + newStudent);
             System.out.println("Great! Sending you to the student dashboard...");
-            checker.login(newStudent.getUsername(), newStudent.getPassword());
+            checker.login(newStudent.getUsername(), newStudent.getHashPass());
             router.navigate("/s_dashboard");
         } catch(Exception e) {
             logger.error(e.getMessage());
