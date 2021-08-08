@@ -18,7 +18,7 @@ public class FacultyDelete extends Page {
     @Override
     public void render() throws Exception {
 
-        System.out.print("\nWould you like to create a new class?"
+        System.out.print("\nWould you like to delete a class?"
                 + "\nY/N: ");
         String input = reader.readLine();
 

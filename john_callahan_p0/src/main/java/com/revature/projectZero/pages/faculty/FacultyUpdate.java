@@ -18,7 +18,7 @@ public class FacultyUpdate extends Page {
     @Override
     public void render() throws Exception {
 
-        System.out.print("\nWould you like to create a new class?"
+        System.out.print("\nWould you like to update an existing class?"
                 + "\nY/N: ");
         String input = reader.readLine();
 
