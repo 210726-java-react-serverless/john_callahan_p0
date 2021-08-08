@@ -31,6 +31,7 @@ public class FacultyUpdate extends Page {
                         + "\n> ");
         String id = reader.readLine();
 
+        // TODO: Everything after this is skipped!
         Course thisCourse = checker.getCourseByID(id);
 
         if(thisCourse != null) {

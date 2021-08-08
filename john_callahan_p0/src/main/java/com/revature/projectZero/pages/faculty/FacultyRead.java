@@ -34,6 +34,7 @@ public class FacultyRead extends Page {
             System.out.println("You have no courses!");
         }
 
+        // Everything before this is skipped.
         System.out.print("\nWhat would you like to do?"
                     + "\n1) Delete a class"
                     + "\n2) Update a class"
