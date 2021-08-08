@@ -261,12 +261,11 @@ public class SchoolRepository {
             MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
             MongoCollection<Document> collection = p0school.getCollection("classes");
             MongoCollection<Course> updatedCourse = p0school.getCollection("classes", Course.class);
-            Document queryDoc = new Document("ClassID", id).append("teacher", teacher);
+            Document queryDoc = new Document("classID", id).append("teacher", teacher);
             Document oldCourse = collection.find(queryDoc).first();
 
             if(oldCourse != null) {
-                collection.deleteOne(oldCourse);
-                updatedCourse.insertOne(course);
+                updatedCourse.replaceOne(oldCourse, course);
             }
         } catch(Exception e) {
             logger.error("Threw an exception at SchoolRepository::updateCourse(), full StackTrace follows: " + e);
