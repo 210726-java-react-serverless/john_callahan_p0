@@ -3,6 +3,7 @@ package com.revature.projectZero.repositories;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.*;
+import com.mongodb.client.result.UpdateResult;
 import com.revature.projectZero.pojos.Course;
 import com.revature.projectZero.pojos.Enrolled;
 import com.revature.projectZero.pojos.Faculty;
@@ -129,7 +130,7 @@ public class SchoolRepository {
     public Course findCourseByID(String id) {
         MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
         MongoCollection<Course> usersCollection = p0school.getCollection("classes", Course.class);
-        Document queryDoc = new Document("_id", id);
+        Document queryDoc = new Document("classID", id);
         return usersCollection.find(queryDoc).first();
     }
 
@@ -247,15 +248,15 @@ public class SchoolRepository {
     // This class allows teachers to update the information related to their courses.
     public boolean updateCourse(Course course, String id, String teacher) throws Exception {
 
-        try {
+        try { // TODO: This does not work! Perhaps a delete, followed by a persist function?
             MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);;
             MongoCollection<Document> collection = p0school.getCollection("classes");
             MongoCollection<Course> updatedCourse = p0school.getCollection("classes", Course.class);
-            Document queryDoc = new Document("_id", id).append("teacher", teacher);
+            Document queryDoc = new Document("ClassID", id).append("teacher", teacher);
             Document oldCourse = collection.find(queryDoc).first();
 
             if(oldCourse != null) {
-                updatedCourse.replaceOne(oldCourse, course);
+                updatedCourse.replaceOne(queryDoc, course);
                 return true;
             }
 
@@ -273,7 +274,7 @@ public class SchoolRepository {
             MongoDatabase database = mongoClient.getDatabase("Project0School");
             MongoCollection<Document> collection = database.getCollection("classes");
             MongoCollection<Document> enrolledCollection = database.getCollection("enrolled");
-            Document queryDoc = new Document("_id", courseID);
+            Document queryDoc = new Document("classID", courseID);
             Document deletedCourse = collection.find(queryDoc).first();
             List<Document> enrolledCourses = new ArrayList<>();
             enrolledCollection.find(queryDoc).into(enrolledCourses);

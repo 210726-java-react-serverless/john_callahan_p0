@@ -7,17 +7,20 @@ import com.revature.projectZero.util.exceptions.ResourcePersistenceException;
 import com.revature.projectZero.pojos.Faculty;
 import com.revature.projectZero.pojos.Student;
 import com.revature.projectZero.repositories.SchoolRepository;
+
 import java.util.List;
 
 /**
-    Takes in user data and validates it against a certain criteria. It is then passed to the service that puts
-    it into MongoDB.
+    A service-layer middleman that validates input before passing it to the database class responsible for
+ placing it into the database.
      */
 
 public class ValidationService {
 
         private final SchoolRepository schoolRepo;
+
         public ValidationService(SchoolRepository studentRepo){ this.schoolRepo = studentRepo; }
+
         private boolean isValid = true;
         private Student authStudent;
         private Faculty authFac;
@@ -52,8 +55,7 @@ public class ValidationService {
         public void enroll(String id) {
                 Course course = schoolRepo.findCourseByID(id);
 
-                Enrolled enrollIn = new Enrolled(this.authStudent.getUsername(), course.getName() ,
-                        course.getId(),  course.getDesc(), course.getTeacher());
+                Enrolled enrollIn = new Enrolled(this.authStudent.getUsername(), course.getName(), course.getClassID(), course.getDesc(), course.getTeacher());
                 try {
                         schoolRepo.enroll(enrollIn);
                 } catch(Exception e) {

@@ -25,7 +25,7 @@ public class FacultyRead extends Page {
         if(courses != null) {
             for (Course cours : courses) {
                 System.out.println("\nName: " + cours.getName()
-                        + "\nID/Call-Sign: " + cours.getId()
+                        + "\nID/Call-Sign: " + cours.getClassID()
                         + "\nDescription: " + cours.getDesc()
                         + "\nTeacher: " + cours.getTeacher()
                         + "\nOpen: " + cours.isOpen());

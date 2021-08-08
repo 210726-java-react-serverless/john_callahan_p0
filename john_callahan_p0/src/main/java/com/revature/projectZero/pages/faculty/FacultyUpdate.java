@@ -36,7 +36,7 @@ public class FacultyUpdate extends Page {
         if(thisCourse != null) {
             System.out.println("Course found!"
                     + "\nName: " + thisCourse.getName()
-                    + "\nID/Call-Sign: " + thisCourse.getId()
+                    + "\nID/Call-Sign: " + thisCourse.getClassID()
                     + "\nDescription: " + thisCourse.getDesc()
                     + "\nTeacher: " + thisCourse.getTeacher()
                     + "\nOpen: " + thisCourse.isOpen());
