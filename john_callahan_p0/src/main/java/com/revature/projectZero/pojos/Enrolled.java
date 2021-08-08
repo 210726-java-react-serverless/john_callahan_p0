@@ -6,7 +6,6 @@ public class Enrolled {
     private String classID;
     private String username;
     private String name;
-    private String id;
     private String desc;
     private String teacher;
     boolean isOpen;
@@ -14,7 +13,13 @@ public class Enrolled {
     // Empty, no-args constructor is necessary for the POJO to be grabbed my Mongo.
     public Enrolled() {}
 
-    public Enrolled(String classID, String username, String name, String id, String desc, String teacher, boolean isOpen) { }
+    public Enrolled(String username, String name, String id, String desc, String teacher) {
+        this.username = username;
+        this.name = name;
+        this.classID = id;
+        this.desc = desc;
+        this.teacher = teacher;
+    }
 
     public String getClassID() {
         return classID;
@@ -30,14 +35,6 @@ public class Enrolled {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getDesc() {
@@ -77,12 +74,12 @@ public class Enrolled {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Enrolled enrolled = (Enrolled) o;
-        return isOpen == enrolled.isOpen && Objects.equals(classID, enrolled.classID) && Objects.equals(username, enrolled.username) && Objects.equals(name, enrolled.name) && Objects.equals(id, enrolled.id) && Objects.equals(desc, enrolled.desc) && Objects.equals(teacher, enrolled.teacher);
+        return isOpen == enrolled.isOpen && Objects.equals(classID, enrolled.classID) && Objects.equals(username, enrolled.username) && Objects.equals(name, enrolled.name) && Objects.equals(desc, enrolled.desc) && Objects.equals(teacher, enrolled.teacher);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(classID, username, name, id, desc, teacher, isOpen);
+        return Objects.hash(classID, username, name, desc, teacher, isOpen);
     }
 
     @Override
@@ -91,7 +88,6 @@ public class Enrolled {
                 "classID='" + classID + '\'' +
                 ", username='" + username + '\'' +
                 ", name='" + name + '\'' +
-                ", id='" + id + '\'' +
                 ", desc='" + desc + '\'' +
                 ", teacher='" + teacher + '\'' +
                 ", isOpen=" + isOpen +

@@ -31,8 +31,8 @@ public class FacultyDashboard extends Page {
         System.out.print("\nWhat would you like to do?"
                         + "\n1) Add a new class to the catalogue"
                         + "\n2) Change the registration details for a class"
-                        + "\n3) Remove a class from the catalog"
-                        + "\n4) View Catalogue"
+                        + "\n3) Remove a class from the catalogue"
+                        + "\n4) View catalogue"
                         + "\n5) Logout"
                         + "\n> ");
         String input = reader.readLine();
@@ -43,27 +43,27 @@ public class FacultyDashboard extends Page {
             case "new class":
             case "New Class":
                 System.out.println("Directing you to the Class Creation services...");
-                router.navigate("/facCreation"); // TODO: Make the facCreation portal
+                router.navigate("/facCreate");
                 return;
             case "2":
             case "change":
             case "update":
             case "Change":
                 System.out.println("Directing you to the Class Update services...");
-                router.navigate("/facUpdate"); // TODO: Make the facUpdate portal
+                router.navigate("/facUpdate");
                 return;
             case "3":
             case "remove":
             case "delete":
             case "Remove":
                 System.out.println("Directing you to the Class Deletion portal...");
-                router.navigate("/facDelete"); // TODO: Make the facDelete portal
+                router.navigate("/facDelete");
                 return;
             case "view":
             case "4":
             case "catalogue":
             case "View":
-                router.navigate("/facView"); // TODO: Make the /facview catalog!
+                router.navigate("/facRead");
                 return;
             case "5":
             case "Logout":

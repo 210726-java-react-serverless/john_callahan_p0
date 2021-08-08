@@ -29,8 +29,9 @@ public class StudentDashboard extends Page {
         System.out.println("Welcome to the Student Dashboard!");
         System.out.print("\nWhat would you like to do?"
                 + "\n1) View 'My Classes'"
-                + "\n2) View all courses"
-                + "\n3) Logout"
+                + "\n2) Enroll in a course"
+                + "\n3) Drop a course"
+                + "\n4) Logout"
                 + "\n> ");
 
         String input = reader.readLine();
@@ -39,15 +40,20 @@ public class StudentDashboard extends Page {
             case "My Classes":
             case "1":
             case "my classes":
-                router.navigate("/myclasses"); // TODO: Link this to the '/myclasses' screen!
+                router.navigate("/myclasses");
                 return;
-            case "All Courses":
-            case "all courses":
+            case "enroll":
+            case "Enroll":
             case "2":
-                router.navigate("/allcourses"); // TODO: Link this to the '/allcourses' screen!
+                router.navigate("/enrollment");
+                return;
+            case "3":
+            case "Drop":
+            case "drop":
+                router.navigate("/dropcourse");
                 return;
             case "Logout":
-            case "3":
+            case "4":
             case "exit":
             case "logout":
                 router.navigate("/welcome");

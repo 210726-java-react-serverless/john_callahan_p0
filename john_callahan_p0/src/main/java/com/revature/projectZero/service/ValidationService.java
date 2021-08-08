@@ -1,6 +1,7 @@
 package com.revature.projectZero.service;
 
 import com.revature.projectZero.pojos.Course;
+import com.revature.projectZero.pojos.Enrolled;
 import com.revature.projectZero.util.exceptions.InvalidRequestException;
 import com.revature.projectZero.util.exceptions.ResourcePersistenceException;
 import com.revature.projectZero.pojos.Faculty;
@@ -10,13 +11,14 @@ import com.revature.projectZero.repositories.SchoolRepository;
 import java.util.List;
 
 /**
-    Takes in user data and validates it against a certain criteria. It is then passed to the service that puts
-    it into MongoDB.
+    A service-layer middleman that validates input before passing it to the database class responsible for
+ placing it into the database.
      */
 
 public class ValidationService {
 
         private final SchoolRepository schoolRepo;
+
         public ValidationService(SchoolRepository studentRepo){ this.schoolRepo = studentRepo; }
 
         private boolean isValid = true;
@@ -36,14 +38,28 @@ public class ValidationService {
                 schoolRepo.save(newStudent);
         }
 
-        // TODO: Instate the createCourse method!
-        public void createCourse() {
+        // This will attempt to persist a created course to the courses database.
+        public void createCourse(Course newCourse) {
 
+                try {
+                        newCourse.setTeacher(this.authFac.getLastName());
+                        // TODO: Run this collected object against some criteria!
+                        schoolRepo.newCourse(newCourse);
+                } catch(Exception e) {
+                        System.out.println(e.getMessage());
+                }
         }
 
-        // TODO: Instate the enroll method!
-        public void enroll() {
+        // This enrolls a student into a course, grafting their username to it,
+        // and placing it within the separate 'enrolled' database.
+        public void enroll(Course selectedCourse, String id) {
 
+                Enrolled enrollIn = new Enrolled(this.authStudent.getUsername(), selectedCourse.getName(), selectedCourse.getClassID(), selectedCourse.getDesc(), selectedCourse.getTeacher());
+                try {
+                        schoolRepo.enroll(enrollIn);
+                } catch(Exception e) {
+                        System.out.println(e.getMessage());
+                }
         }
 
         // Wipes user data and sets the session to an invalid one.
@@ -92,21 +108,46 @@ public class ValidationService {
                 }
         }
 
-        // TODO: Instate the getOpenClasses method!
-        public List<Course> getOpenClasses() {
-                return null;
+        // This returns one class at the user's request (for the purposes of an update function)
+        public Course getCourseByID(String id) { return schoolRepo.findCourseByID(id); }
+
+        // This returns all classes that are open for enrollment.
+        public List<Course> getOpenClasses() { return schoolRepo.findCourseByOpen(); }
+
+        // This returns all classes associated with a student username.
+        public List<Enrolled> getMyCourses() { return schoolRepo.findEnrolledByUsername(this.authStudent.getUsername()); }
+
+        // This fetches the list of classes associated with a certain teacher name.
+        public List<Course> getTeacherClasses() { return schoolRepo.findCourseByTeacher(this.authFac.getLastName()); }
+
+        public void updateCourse(Course newCourse, String id) {
+                try {
+                        String teacher = this.authFac.getLastName();
+                        schoolRepo.updateCourse(newCourse, id, teacher);
+                } catch (Exception e) {
+                        System.out.println("Updated course not persisted! " + e.getMessage());
+                }
         }
 
-        // TODO: Instate the getMyCourses method!
-        public List<Course> getMyCourses() {
-                return null;
+        public void deleteCourse(String id) {
+                try {
+                        // TODO: Validate this input!
+                        schoolRepo.deleteCourse(id);
+                } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                }
         }
 
-        // TODO: Instate the getTeacherClasses method!
-        public List<Course> getTeacherClasses() {
-                return null;
+        public void deregister(String id) {
+                try {
+                        // TODO: Validate this input!
+                        schoolRepo.deleteEnrolled(id, this.authStudent.getUsername());
+                } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                }
         }
 
+        // TODO: Implement some verification for Teacher-submitted courses!
 
         // This verifies that students are valid and fit to be placed in the system.
         public boolean isUserValid(Student user) {
