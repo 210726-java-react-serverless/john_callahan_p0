@@ -54,6 +54,7 @@ public class FacultyRead extends Page {
             case "Update":
                 System.out.println("Sending you to Course Update services...");
                 router.navigate("/facUpdate");
+                break;
             case "3":
             case "back":
             case "Back":

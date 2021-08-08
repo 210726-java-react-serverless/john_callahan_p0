@@ -15,6 +15,7 @@ public class StudentMyClasses  extends Page {
         this.checker = checker;
     }
 
+    // TODO: Complete this!
     @Override
     public void render() throws Exception {
         System.out.println("Student 'My Classes' works!");

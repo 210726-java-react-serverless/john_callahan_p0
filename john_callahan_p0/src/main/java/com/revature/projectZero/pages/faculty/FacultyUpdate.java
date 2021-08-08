@@ -31,7 +31,6 @@ public class FacultyUpdate extends Page {
                         + "\n> ");
         String id = reader.readLine();
 
-        // TODO: Everything after this is skipped!
         Course thisCourse = checker.getCourseByID(id);
 
         if(thisCourse != null) {
@@ -52,10 +51,10 @@ public class FacultyUpdate extends Page {
         System.out.print("\nName: ");
         String name = reader.readLine();
 
-        System.out.print("\nID/Call-Sign: ");
-        id = reader.readLine();
+        System.out.print("ID/Call-Sign: ");
+        String newId = reader.readLine();
 
-        System.out.print("\nDesc: ");
+        System.out.print("Desc: ");
         String desc = reader.readLine();
 
         boolean notReady = true;
@@ -65,6 +64,8 @@ public class FacultyUpdate extends Page {
             input = reader.readLine();
 
             switch (input) {
+                case "Y":
+                case "y":
                 case "open":
                 case "Open":
                     isOpen = true;
@@ -72,6 +73,8 @@ public class FacultyUpdate extends Page {
                     break;
                 case "closed":
                 case "Closed":
+                case "n":
+                case "N":
                     isOpen = false;
                     notReady = false;
                     break;
@@ -80,7 +83,7 @@ public class FacultyUpdate extends Page {
             }
         }
 
-        Course renewedCourse = new Course(name, id, desc, thisCourse.getTeacher(), isOpen);
+        Course renewedCourse = new Course(name, newId, desc, thisCourse.getTeacher(), isOpen);
         checker.updateCourse(renewedCourse, id);
 
         System.out.println("Update service completed!");

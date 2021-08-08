@@ -40,7 +40,6 @@ public class ValidationService {
 
                 try {
                         newCourse.setTeacher(this.authFac.getLastName());
-                        System.out.println(newCourse);
                         // TODO: Run this collected object against some criteria!
                         schoolRepo.newCourse(newCourse);
                 } catch(Exception e) {
@@ -53,7 +52,7 @@ public class ValidationService {
         public void enroll(String id) {
                 Course course = schoolRepo.findCourseByID(id);
 
-                Enrolled enrollIn = new Enrolled(course.getClassID(), this.authStudent.getUsername(), course.getName() ,
+                Enrolled enrollIn = new Enrolled(this.authStudent.getUsername(), course.getName() ,
                         course.getId(),  course.getDesc(), course.getTeacher());
                 try {
                         schoolRepo.enroll(enrollIn);

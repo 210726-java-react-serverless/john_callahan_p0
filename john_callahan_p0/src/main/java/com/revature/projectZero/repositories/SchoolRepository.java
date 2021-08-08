@@ -95,7 +95,7 @@ public class SchoolRepository {
     public Student findStudentByCredentials(String username, int hashPass) throws Exception {
 
         try {
-            MongoDatabase p0school = mongoClient.getDatabase("Project0School");
+            MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
             MongoCollection<Document> usersCollection = p0school.getCollection("StudentCredentials");
             Document queryDoc = new Document("username", username).append("hashPass", hashPass);
             Document userCredentials = usersCollection.find(queryDoc).first();
@@ -117,84 +117,51 @@ public class SchoolRepository {
 
     // This method is primarily for students to find classes that are accepting new entries.
     public List<Course> findCourseByOpen() {
-        MongoDatabase p0school = mongoClient.getDatabase("Project0School"); // TODO: Add the Codec here!
-        MongoCollection<Document> usersCollection = p0school.getCollection("classes");
+        MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
+        MongoCollection<Course> usersCollection = p0school.getCollection("classes", Course.class);
         Document queryDoc = new Document("isOpen", true);
-        List<Document> bsonCourses = new ArrayList<>();
-        usersCollection.find(queryDoc).into(bsonCourses);
-
         List<Course> courses = new ArrayList<>();
-        try {
+        usersCollection.find(queryDoc).into(courses);
 
-            // Iterate over bsonCourses and convert them all to json
-            for (int i = 0; i < bsonCourses.size(); i++) {
-                String json = bsonCourses.get(i).toJson();
-                Course currentCourse = mapper.readValue(json, Course.class);
-                courses.add(i, currentCourse);
-            }
-        } catch (JsonProcessingException jse) {
-            logger.error("Threw a JsonProcessingException at SchoolRepository::isUsernameTaken, full StackTrace follows: " + jse);
-        }
         return courses;
     }
 
-    // TODO: Debug this!
     public Course findCourseByID(String id) {
         MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
         MongoCollection<Course> usersCollection = p0school.getCollection("classes", Course.class);
-        Document queryDoc = new Document("id", id);
+        Document queryDoc = new Document("_id", id);
         return usersCollection.find(queryDoc).first();
     }
 
 
     // This is used so that students can see their courses.
     public List<Enrolled> findEnrolledByUsername(String username) {
-        MongoDatabase p0school = mongoClient.getDatabase("Project0School");
-        MongoCollection<Document> usersCollection = p0school.getCollection("enrolled");
+        MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
+        MongoCollection<Enrolled> usersCollection = p0school.getCollection("enrolled", Enrolled.class);
         Document queryDoc = new Document("student", username);
-        List<Document> bsonCourses = new ArrayList<>();
-        usersCollection.find(queryDoc).into(bsonCourses);
-
         List<Enrolled> courses = new ArrayList<>();
-        try {
+        usersCollection.find(queryDoc).into(courses);
 
-            // Iterate over bsonCourses and convert them all to json
-            for (int i = 0; i<bsonCourses.size(); i++) {
-                String json = bsonCourses.get(i).toJson();
-                Enrolled currentCourse = mapper.readValue(json, Enrolled.class);
-                courses.add(i, currentCourse);
-            }
-        } catch( JsonProcessingException jse) {
-            logger.error(jse.getMessage());
-            logger.error("Threw a JsonProcessingException at SchoolRepository::isUsernameTaken, full StackTrace follows: " + jse);
-        }
         return courses;
-
     }
 
     // This method is primarily used by Teachers to find classes that they put onto the database, for deletion and updates.
     public List<Course> findCourseByTeacher(String lastName) {
-        MongoDatabase p0school = mongoClient.getDatabase("Project0School"); // TODO: Add Codec here!
-        MongoCollection<Document> usersCollection = p0school.getCollection("classes");
-        Document queryDoc = new Document("teacher", lastName);
-        List<Document> bsonCourses = new ArrayList<>();
-        usersCollection.find(queryDoc).into(bsonCourses);
 
-        List<Course> courses = new ArrayList<>();
         try {
-            // TODO: Debug this!
-            // Iterate over bsonCourses and convert them all to json
-            for (int i = 0; i<bsonCourses.size(); i++) {
-                String json = bsonCourses.get(i).toJson();
-                Course currentCourse = mapper.readValue(json, Course.class);
-                courses.add(i, currentCourse);
-            }
-        } catch( JsonProcessingException jse) {
-        logger.error(jse.getMessage());
-        logger.error("Threw a JsonProcessingException at SchoolRepository::isUsernameTaken, full StackTrace follows: " + jse);
-    }
-        return courses;
+            MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
+            MongoCollection<Course> usersCollection = p0school.getCollection("classes", Course.class);
+            Document queryDoc = new Document("teacher", lastName);
+            List<Course> courses = new ArrayList<>();
 
+            usersCollection.find(queryDoc).into(courses);
+
+            return courses;
+        } catch (Exception e) {
+            System.out.println("An exception has occurred!" + e.getMessage());
+            logger.error("Problem occurred when parsing the data from Mongo. Full Stack Trace follows:: " + e);
+        }
+        return null;
     }
 
     // Primarily used to ensure that a Student's input username is unique.
@@ -284,7 +251,7 @@ public class SchoolRepository {
             MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);;
             MongoCollection<Document> collection = p0school.getCollection("classes");
             MongoCollection<Course> updatedCourse = p0school.getCollection("classes", Course.class);
-            Document queryDoc = new Document("id", id).append("teacher", teacher);
+            Document queryDoc = new Document("_id", id).append("teacher", teacher);
             Document oldCourse = collection.find(queryDoc).first();
 
             if(oldCourse != null) {
@@ -306,7 +273,7 @@ public class SchoolRepository {
             MongoDatabase database = mongoClient.getDatabase("Project0School");
             MongoCollection<Document> collection = database.getCollection("classes");
             MongoCollection<Document> enrolledCollection = database.getCollection("enrolled");
-            Document queryDoc = new Document("id", courseID);
+            Document queryDoc = new Document("_id", courseID);
             Document deletedCourse = collection.find(queryDoc).first();
             List<Document> enrolledCourses = new ArrayList<>();
             enrolledCollection.find(queryDoc).into(enrolledCourses);
