@@ -13,7 +13,13 @@ public class Course {
     // Empty, no args constructor necessary for Mongo to grab the course object.
     public Course() {}
 
-    public Course(String name, String id, String desc, String teacher, boolean isOpen) { }
+    public Course(String name, String id, String desc, String teacher, boolean isOpen) {
+        this.name = name;
+        this.id = id;
+        this.desc = desc;
+        this.teacher = teacher;
+        this.isOpen = isOpen;
+    }
 
     public String getClassID() {
         return classID;

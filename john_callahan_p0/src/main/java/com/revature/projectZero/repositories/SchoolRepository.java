@@ -117,7 +117,7 @@ public class SchoolRepository {
 
     // This method is primarily for students to find classes that are accepting new entries.
     public List<Course> findCourseByOpen() {
-        MongoDatabase p0school = mongoClient.getDatabase("Project0School");
+        MongoDatabase p0school = mongoClient.getDatabase("Project0School"); // TODO: Add the Codec here!
         MongoCollection<Document> usersCollection = p0school.getCollection("classes");
         Document queryDoc = new Document("isOpen", true);
         List<Document> bsonCourses = new ArrayList<>();
@@ -174,7 +174,7 @@ public class SchoolRepository {
 
     // This method is primarily used by Teachers to find classes that they put onto the database, for deletion and updates.
     public List<Course> findCourseByTeacher(String lastName) {
-        MongoDatabase p0school = mongoClient.getDatabase("Project0School");
+        MongoDatabase p0school = mongoClient.getDatabase("Project0School"); // TODO: Add Codec here!
         MongoCollection<Document> usersCollection = p0school.getCollection("classes");
         Document queryDoc = new Document("teacher", lastName);
         List<Document> bsonCourses = new ArrayList<>();

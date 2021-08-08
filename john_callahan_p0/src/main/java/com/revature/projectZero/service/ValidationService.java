@@ -37,8 +37,10 @@ public class ValidationService {
 
         // This will attempt to persist a created course to the courses database.
         public void createCourse(Course newCourse) {
+
                 try {
                         newCourse.setTeacher(this.authFac.getLastName());
+                        System.out.println(newCourse);
                         // TODO: Run this collected object against some criteria!
                         schoolRepo.newCourse(newCourse);
                 } catch(Exception e) {
