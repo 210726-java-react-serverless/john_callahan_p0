@@ -17,7 +17,6 @@ public class StudentEnrollment extends Page {
         this.checker = checker;
     }
 
-    // TODO: Complete this!
     @Override
     public void render() throws Exception {
 
@@ -45,7 +44,7 @@ public class StudentEnrollment extends Page {
             return;
         }
 
-        System.out.print("\nPlease input the call-sign/ID of the class you would like to update (e.g. ENG101)"
+        System.out.print("\nPlease input the call-sign/ID of the class you would like to Enroll in (e.g. ENG101)"
                 + "\n> ");
         String id = reader.readLine();
 
@@ -74,7 +73,7 @@ public class StudentEnrollment extends Page {
 
         checker.enroll(thisCourse, id);
 
-        System.out.println("Update service completed!");
+        System.out.println("You have successfully been enrolled into " + thisCourse.getClassID() + "!");
         System.out.println("Sending you back to the dashboard...");
         router.navigate("/s_dashboard");
     }

@@ -11,7 +11,7 @@ public class StudentDropCourse extends Page {
     ValidationService checker;
 
     public StudentDropCourse(BufferedReader reader, PageRouter router, ValidationService checker) {
-        super("MyClasses", "/myclasses", reader, router);
+        super("MyClasses", "/dropcourse", reader, router);
         this.checker = checker;
     }
 

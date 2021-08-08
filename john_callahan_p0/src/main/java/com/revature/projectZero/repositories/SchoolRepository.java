@@ -3,7 +3,6 @@ package com.revature.projectZero.repositories;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.*;
-import com.mongodb.client.result.UpdateResult;
 import com.revature.projectZero.pojos.Course;
 import com.revature.projectZero.pojos.Enrolled;
 import com.revature.projectZero.pojos.Faculty;
@@ -17,12 +16,8 @@ import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.bson.conversions.Bson;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
 import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
 import static com.revature.projectZero.util.GetMongoClient.generate;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -118,13 +113,19 @@ public class SchoolRepository {
 
     // This method is primarily for students to find classes that are accepting new entries.
     public List<Course> findCourseByOpen() {
-        MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
-        MongoCollection<Course> usersCollection = p0school.getCollection("classes", Course.class);
-        Document queryDoc = new Document("isOpen", true);
-        List<Course> courses = new ArrayList<>();
-        usersCollection.find(queryDoc).into(courses);
+        try {
+            MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
+            MongoCollection<Course> usersCollection = p0school.getCollection("classes", Course.class);
+            Document queryDoc = new Document("open", true);
+            List<Course> courses = new ArrayList<>();
+            usersCollection.find(queryDoc).into(courses);
 
-        return courses;
+            return courses;
+        } catch (Exception e) {
+            System.out.println("An exception has occurred!" + e.getMessage());
+            logger.error("Problem occurred when parsing the data from Mongo. Full Stack Trace follows:: " + e);
+        }
+        return null;
     }
 
     public Course findCourseByID(String id) {
@@ -137,13 +138,20 @@ public class SchoolRepository {
 
     // This is used so that students can see their courses.
     public List<Enrolled> findEnrolledByUsername(String username) {
-        MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
-        MongoCollection<Enrolled> usersCollection = p0school.getCollection("enrolled", Enrolled.class);
-        Document queryDoc = new Document("student", username);
-        List<Enrolled> courses = new ArrayList<>();
-        usersCollection.find(queryDoc).into(courses);
 
-        return courses;
+        try {
+            MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
+            MongoCollection<Enrolled> usersCollection = p0school.getCollection("enrolled", Enrolled.class);
+            Document queryDoc = new Document("username", username);
+            List<Enrolled> courses = new ArrayList<>();
+            usersCollection.find(queryDoc).into(courses);
+
+            return courses;
+        } catch (Exception e) {
+            System.out.println("An exception has occurred!" + e.getMessage());
+            logger.error("Problem occurred when parsing the data from Mongo. Full Stack Trace follows:: " + e);
+        }
+        return null;
     }
 
     // This method is primarily used by Teachers to find classes that they put onto the database, for deletion and updates.
@@ -245,26 +253,25 @@ public class SchoolRepository {
     }
 
     // ====UPDATE====
-    // This class allows teachers to update the information related to their courses.
-    public boolean updateCourse(Course course, String id, String teacher) throws Exception {
-
-        try { // TODO: This does not work! Perhaps a delete, followed by a persist function?
-            MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);;
+    // This class allows teachers to update the information related to their courses. It works by first
+    // deleting the old course, then adding a new course with the same details in its place.
+    public void updateCourse(Course course, String id, String teacher) throws Exception {
+        // TODO: If you update a course this way, there is no way for the Enrolled Database to catch up!
+        try {
+            MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
             MongoCollection<Document> collection = p0school.getCollection("classes");
             MongoCollection<Course> updatedCourse = p0school.getCollection("classes", Course.class);
             Document queryDoc = new Document("ClassID", id).append("teacher", teacher);
             Document oldCourse = collection.find(queryDoc).first();
 
             if(oldCourse != null) {
-                updatedCourse.replaceOne(queryDoc, course);
-                return true;
+                collection.deleteOne(oldCourse);
+                updatedCourse.insertOne(course);
             }
-
         } catch(Exception e) {
             logger.error("Threw an exception at SchoolRepository::updateCourse(), full StackTrace follows: " + e);
             throw new ResourcePersistenceException("We're sorry, but that could not be updated!");
         }
-        return false;
     }
 
     // ====DELETE====
@@ -281,8 +288,8 @@ public class SchoolRepository {
 
             // this deletes all instances of the course which students might be enrolled to.
             if(deletedCourse != null) {
-                for (Document enrolledCours : enrolledCourses) {
-                    enrolledCollection.deleteMany(enrolledCours);
+                for (Document enrolledCourse : enrolledCourses) {
+                    enrolledCollection.deleteMany(enrolledCourse);
                 }
             }
 
@@ -299,13 +306,14 @@ public class SchoolRepository {
 
     public void deleteEnrolled(String courseID, String username) throws Exception{
         try {
-            MongoDatabase database = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
-            MongoCollection<Enrolled> collection = database.getCollection("enrolled", Enrolled.class);
+            MongoDatabase database = mongoClient.getDatabase("Project0School");
+            MongoCollection<Document> collection = database.getCollection("enrolled");
             Document queryDoc = new Document("id", courseID).append("username", username);
+            Document deleted = collection.find(queryDoc).first();
 
             // this deletes the instance from the "classes" database.
-            if(collection.find(queryDoc).first() != null) {
-                collection.deleteOne((Bson) Objects.requireNonNull(collection.find(queryDoc).first()));
+            if(deleted != null) {
+                collection.deleteOne(deleted);
             }
 
         } catch (Exception e) {

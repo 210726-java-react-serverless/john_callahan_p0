@@ -50,7 +50,7 @@ public class StudentMyClasses  extends Page {
             case "drop":
             case "Drop":
                 System.out.println("Sending you to Course Drop services...");
-                router.navigate("/drop");
+                router.navigate("/dropcourse");
                 break;
             case "3":
             case "back":
