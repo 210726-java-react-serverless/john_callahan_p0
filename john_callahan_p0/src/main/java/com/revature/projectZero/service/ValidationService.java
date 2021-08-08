@@ -39,6 +39,7 @@ public class ValidationService {
         public void createCourse(Course newCourse) {
                 try {
                         newCourse.setTeacher(this.authFac.getLastName());
+                        // TODO: Run this collected object against some criteria!
                         schoolRepo.newCourse(newCourse);
                 } catch(Exception e) {
                         System.out.println(e.getMessage());
@@ -114,6 +115,16 @@ public class ValidationService {
         // This fetches the list of classes associated with a certain teacher name.
         public List<Course> getTeacherClasses() { return schoolRepo.findCourseByTeacher(this.authFac.getLastName()); }
 
+        public void deleteCourse(String id) {
+                try {
+                        // TODO: Validate this input!
+                        schoolRepo.deleteCourse(id);
+                } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                }
+        }
+
+        // TODO: Implement some verification for Teacher-submitted courses!
 
         // This verifies that students are valid and fit to be placed in the system.
         public boolean isUserValid(Student user) {
