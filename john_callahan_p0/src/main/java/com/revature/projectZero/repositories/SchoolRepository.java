@@ -138,6 +138,7 @@ public class SchoolRepository {
         return courses;
     }
 
+    // TODO: Debug this!
     public Course findCourseByID(String id) {
         MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
         MongoCollection<Course> usersCollection = p0school.getCollection("classes", Course.class);
@@ -181,7 +182,7 @@ public class SchoolRepository {
 
         List<Course> courses = new ArrayList<>();
         try {
-
+            // TODO: Debug this!
             // Iterate over bsonCourses and convert them all to json
             for (int i = 0; i<bsonCourses.size(); i++) {
                 String json = bsonCourses.get(i).toJson();

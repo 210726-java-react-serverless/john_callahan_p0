@@ -38,7 +38,7 @@ public class FacultyRead extends Page {
                     + "\n1) Delete a class"
                     + "\n2) Update a class"
                     + "\n3) Go back to the dashboard"
-                    + "> ");
+                    + "\n> ");
         String input = reader.readLine();
 
         switch(input) {

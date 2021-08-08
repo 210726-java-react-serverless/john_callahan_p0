@@ -28,7 +28,7 @@ public class FacultyUpdate extends Page {
         }
 
         System.out.print("\nPlease input the call-sign/ID of the class you would like to update (e.g. ENG101)"
-                        + "> ");
+                        + "\n> ");
         String id = reader.readLine();
 
         Course thisCourse = checker.getCourseByID(id);
@@ -43,7 +43,7 @@ public class FacultyUpdate extends Page {
         } else {
             System.out.println("Sorry! We could not find a course with that ID!");
             System.out.println("Sending you back to the dashboard...");
-            router.navigate("f_dashboard");
+            router.navigate("/f_dashboard");
             return;
         }
 
