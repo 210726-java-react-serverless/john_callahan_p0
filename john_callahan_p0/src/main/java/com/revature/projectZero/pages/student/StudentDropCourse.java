@@ -1,4 +1,4 @@
-package com.revature.projectZero.pages.faculty;
+package com.revature.projectZero.pages.student;
 
 import com.revature.projectZero.pages.Page;
 import com.revature.projectZero.service.ValidationService;
@@ -6,42 +6,41 @@ import com.revature.projectZero.util.PageRouter;
 
 import java.io.BufferedReader;
 
-public class FacultyDelete extends Page {
+public class StudentDropCourse extends Page {
 
-    private final ValidationService checker;
+    ValidationService checker;
 
-    public FacultyDelete(BufferedReader reader, PageRouter router, ValidationService checker) {
-        super("FacultyDelete", "/facDelete", reader, router);
+    public StudentDropCourse(BufferedReader reader, PageRouter router, ValidationService checker) {
+        super("MyClasses", "/myclasses", reader, router);
         this.checker = checker;
-
     }
 
     @Override
     public void render() throws Exception {
 
-        System.out.print("\nWould you like to delete a class?"
+        System.out.print("\nWould you like to drop a course?"
                 + "\nY/N: ");
 
         String input = reader.readLine();
         if(input.equals("n") || input.equals("N")) {
-            router.navigate("/f_dashboard");
+            router.navigate("/s_dashboard");
         }
 
         System.out.print("\nPlease enter the ID/call-sign of the class you would like to delete (A good example of this is ENG101)"
-                    + "\n> ");
+                + "\n> ");
         String id = reader.readLine();
 
-        checker.deleteCourse(id);
-        System.out.println("The Delete function was a success!");
+        checker.deregister(id);
+        System.out.println("You have successfully dropped the course!");
 
         // Query the user for their intention.
-        System.out.print("\nWould you like to delete another course?"
-                        + "\nY/N: ");
+        System.out.print("\nWould you like to drop another course?"
+                + "\nY/N: ");
         input = reader.readLine();
 
         if (input.equals("n")||input.equals("N")) {
             System.out.println("Sending you back to the Dashboard...");
-            router.navigate("/f_dashboard");
+            router.navigate("/s_dashboard");
         }
     }
 }

@@ -52,10 +52,9 @@ public class ValidationService {
 
         // This enrolls a student into a course, grafting their username to it,
         // and placing it within the separate 'enrolled' database.
-        public void enroll(String id) {
-                Course course = schoolRepo.findCourseByID(id);
+        public void enroll(Course selectedCourse, String id) {
 
-                Enrolled enrollIn = new Enrolled(this.authStudent.getUsername(), course.getName(), course.getClassID(), course.getDesc(), course.getTeacher());
+                Enrolled enrollIn = new Enrolled(this.authStudent.getUsername(), selectedCourse.getName(), selectedCourse.getClassID(), selectedCourse.getDesc(), selectedCourse.getTeacher());
                 try {
                         schoolRepo.enroll(enrollIn);
                 } catch(Exception e) {
@@ -134,6 +133,15 @@ public class ValidationService {
                 try {
                         // TODO: Validate this input!
                         schoolRepo.deleteCourse(id);
+                } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                }
+        }
+
+        public void deregister(String id) {
+                try {
+                        // TODO: Validate this input!
+                        schoolRepo.deleteEnrolled(id, this.authStudent.getUsername());
                 } catch (Exception e) {
                         System.out.println(e.getMessage());
                 }

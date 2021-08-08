@@ -4,8 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import com.revature.projectZero.pages.*;
 import com.revature.projectZero.pages.faculty.*;
-import com.revature.projectZero.pages.student.StudentDashboard;
-import com.revature.projectZero.pages.student.StudentRegisterPage;
+import com.revature.projectZero.pages.student.*;
 import com.revature.projectZero.repositories.SchoolRepository;
 import com.revature.projectZero.service.ValidationService;
 import org.apache.logging.log4j.LogManager;
@@ -34,6 +33,9 @@ public class AppState {
                 .addPage(new LoginPage(reader, router, checker))
                 .addPage(new StudentRegisterPage(reader, router, checker))
                 .addPage(new StudentDashboard(reader, router, checker))
+                .addPage(new StudentMyClasses(reader, router, checker))
+                .addPage(new StudentEnrollment(reader, router, checker))
+                .addPage(new StudentDropCourse(reader, router, checker))
                 .addPage(new FacultyDashboard(reader, router, checker))
                 .addPage(new FacultyCreate(reader, router, checker))
                 .addPage(new FacultyRead(reader, router, checker))
