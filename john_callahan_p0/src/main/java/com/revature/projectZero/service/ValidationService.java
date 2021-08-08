@@ -106,6 +106,9 @@ public class ValidationService {
                 }
         }
 
+        // This returns one class at the user's request (for the purposes of an update function)
+        public Course getCourseByID(String id) { return schoolRepo.findCourseByID(id); }
+
         // This returns all classes that are open for enrollment.
         public List<Course> getOpenClasses() { return schoolRepo.findCourseByOpen(); }
 
@@ -114,6 +117,15 @@ public class ValidationService {
 
         // This fetches the list of classes associated with a certain teacher name.
         public List<Course> getTeacherClasses() { return schoolRepo.findCourseByTeacher(this.authFac.getLastName()); }
+
+        public void updateCourse(Course newCourse, String id) {
+                try {
+                        String teacher = this.authFac.getLastName();
+                        schoolRepo.updateCourse(newCourse, id, teacher);
+                } catch (Exception e) {
+                        System.out.println("Updated course not persisted! " + e.getMessage());
+                }
+        }
 
         public void deleteCourse(String id) {
                 try {
