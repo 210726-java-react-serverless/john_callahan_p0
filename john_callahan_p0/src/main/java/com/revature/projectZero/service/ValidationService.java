@@ -3,10 +3,10 @@ package com.revature.projectZero.service;
 import com.revature.projectZero.pojos.Course;
 import com.revature.projectZero.pojos.Enrolled;
 import com.revature.projectZero.util.exceptions.InvalidRequestException;
-import com.revature.projectZero.util.exceptions.ResourcePersistenceException;
 import com.revature.projectZero.pojos.Faculty;
 import com.revature.projectZero.pojos.Student;
 import com.revature.projectZero.repositories.SchoolRepository;
+import com.revature.projectZero.util.exceptions.ResourcePersistenceException;
 
 import java.util.List;
 
@@ -26,39 +26,32 @@ public class ValidationService {
         private Faculty authFac;
 
 
-        public void register(Student newStudent) throws Exception {
+        public void register(Student newStudent) {
+
                 if (!isUserValid(newStudent)) {
                         throw new InvalidRequestException("Invalid user data provided!");
-                }
-
-                if (schoolRepo.findStudentByUsername(newStudent.getUsername()) != null) {
-                        throw new ResourcePersistenceException("Provided username is already taken!");
                 }
 
                 schoolRepo.save(newStudent);
         }
 
         // This will attempt to persist a created course to the courses database.
-        public void createCourse(Course newCourse) {
+        public void createCourse(Course newCourse) { // TODO test this!
 
-                try {
-                        newCourse.setTeacher(this.authFac.getLastName());
-                        // TODO: Run this collected object against some criteria!
+                newCourse.setTeacher(this.authFac.getLastName());
+
+                if (isCourseValid(newCourse)) {
                         schoolRepo.newCourse(newCourse);
-                } catch(Exception e) {
-                        System.out.println(e.getMessage());
                 }
         }
 
         // This enrolls a student into a course, grafting their username to it,
         // and placing it within the separate 'enrolled' database.
-        public void enroll(Course selectedCourse, String id) {
-
-                Enrolled enrollIn = new Enrolled(this.authStudent.getUsername(), selectedCourse.getName(), selectedCourse.getClassID(), selectedCourse.getDesc(), selectedCourse.getTeacher());
-                try {
+        public void enroll(Course selectedCourse) { // TODO test this!
+                if (isCourseValid(selectedCourse)) {
+                        Enrolled enrollIn = new Enrolled(this.authStudent.getUsername(), selectedCourse.getName(),
+                                selectedCourse.getClassID(), selectedCourse.getDesc(), selectedCourse.getTeacher());
                         schoolRepo.enroll(enrollIn);
-                } catch(Exception e) {
-                        System.out.println(e.getMessage());
                 }
         }
 
@@ -69,7 +62,7 @@ public class ValidationService {
                 this.authFac = null;
         }
 
-        public Student login(String username, int hashPass) throws Exception {
+        public Student login(String username, int hashPass) { // TODO test this!
                 if (username == null || username.trim().equals("")) {
                         throw new InvalidRequestException("Invalid user credentials provided!");
                 }
@@ -82,7 +75,7 @@ public class ValidationService {
         }
 
         // Sends Student data to the requested location
-        public Student getStudent() {
+        public Student getStudent() { // TODO: test this!
                 if(this.authStudent != null || this.isValid) {
                         return this.authStudent;
                 } else {
@@ -90,7 +83,7 @@ public class ValidationService {
                 }
         }
 
-        public Faculty facLogin(String username, int hashPass) throws Exception {
+        public Faculty facLogin(String username, int hashPass) { // TODO test this!
                 if (username == null || username.trim().equals("")) {
                         throw new InvalidRequestException("Invalid user credentials provided!");
                 }
@@ -100,7 +93,7 @@ public class ValidationService {
         }
 
         // Sends faculty user data to the requested location
-        public Faculty getAuthFac() {
+        public Faculty getAuthFac() { // TODO test this!
                 if(this.authFac != null || this.isValid) {
                         return this.authFac;
                 } else {
@@ -120,34 +113,45 @@ public class ValidationService {
         // This fetches the list of classes associated with a certain teacher name.
         public List<Course> getTeacherClasses() { return schoolRepo.findCourseByTeacher(this.authFac.getLastName()); }
 
-        public void updateCourse(Course newCourse, String id) {
-                try {
+        public void updateCourse(Course newCourse, String id) { // TODO test this!
+                if (isCourseValid(newCourse)) {
                         String teacher = this.authFac.getLastName();
                         schoolRepo.updateCourse(newCourse, id, teacher);
-                } catch (Exception e) {
-                        System.out.println("Updated course not persisted! " + e.getMessage());
+                } else {
+                        throw new ResourcePersistenceException("Sorry, but that could not be persisted!");
                 }
         }
 
-        public void deleteCourse(String id) {
-                try {
-                        // TODO: Validate this input!
+        public void deleteCourse(String id) { // TODO Test this!
+                if (isClassIDValid(id)) {
                         schoolRepo.deleteCourse(id);
-                } catch (Exception e) {
-                        System.out.println(e.getMessage());
                 }
         }
 
-        public void deregister(String id) {
-                try {
-                        // TODO: Validate this input!
+        public void deregister(String id) { // TODO Test this!
+                if (isClassIDValid(id)) {
                         schoolRepo.deleteEnrolled(id, this.authStudent.getUsername());
-                } catch (Exception e) {
-                        System.out.println(e.getMessage());
                 }
         }
 
-        // TODO: Implement some verification for Teacher-submitted courses!
+
+        public boolean isCourseValid(Course course) {
+                if (course == null) return false;
+                if (course.getName() == null || course.getName().trim().equals("")) throw new RuntimeException("Course name cannot be null");
+                if (course.getClassID() == null || course.getClassID().trim().equals("")) throw new RuntimeException("Class ID cannot be blank or null");
+                if (course.getDesc() == null || course.getDesc().trim().equals("")) throw new RuntimeException("Course description cannot be blank or null");
+                if (course.getTeacher() == null) throw new RuntimeException("Teacher cannot be null");
+
+                isClassIDValid(course.getClassID());
+
+                // Verify that the course description is up to par.
+                if (course.getDesc().length() < 20 && course.getDesc().length() > 50) throw new RuntimeException("Course description must be at least twenty characters and no more than fifty characters");
+
+                // Verify that the course name is within valid boundaries.
+                if (course.getName().length() < 5 && course.getName().length() <= 20) throw new RuntimeException("Course name must be at least five characters and less than or equal to twenty characters");
+
+                return true;
+        }
 
         // This verifies that students are valid and fit to be placed in the system.
         public boolean isUserValid(Student user) {
@@ -157,7 +161,29 @@ public class ValidationService {
                 if (user.getEmail() == null || user.getEmail().trim().equals("")) return false;
                 if (user.getUsername() == null || user.getUsername().trim().equals("")) return false;
                 this.isUserUnique(user.getUsername());
+                this.isEmailUnique(user.getEmail());
                 return true;
+        }
+
+        public boolean isClassIDValid(String ClassID) {
+                // Verify that the class ID is exactly six characters long.
+                if (ClassID.length() != 6) throw new RuntimeException("Class ID must be exactly six characters long!");
+
+                // Verify that the class ID is not already taken.
+                if (isClassIDTaken(ClassID)) throw new RuntimeException("Class ID cannot already be taken!");
+
+                // Verify that all characters in ClassID are uppercase
+                for (int i=0; i<ClassID.length(); i++) {
+                        if (Character.isLowerCase(ClassID.charAt(i))) {
+                                throw new InvalidRequestException("Class ID must be all capital letters!");
+                        }
+                }
+
+                return true;
+        }
+
+        private boolean isClassIDTaken(String ClassID) {
+                return schoolRepo.findCourseByID(ClassID) != null;
         }
 
         public boolean isUserUnique(String username) {
