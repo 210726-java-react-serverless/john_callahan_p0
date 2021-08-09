@@ -62,7 +62,5 @@ public class AppState {
     }
 
     // the application shutdown method, safely (and effectively) closes the app.
-    public static void closeApp() {
-        appRunning = false;
-    }
+    public static void closeApp() { appRunning = false; }
 }

@@ -46,6 +46,7 @@ public class WelcomePage extends Page {
             case "3":
             case "Exit":
                 System.out.println("Thank you for using our App!");
+                reader.close();
                 closeApp();
                 return;
             default:
