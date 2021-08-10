@@ -64,7 +64,6 @@ public class FacultyCreate extends Page {
             }
         }
 
-        // TODO: This does not compile proper objects in the database! Only the teacher is visible!
         Course newCourse = new Course(name, id, desc, null, isOpen);
         checker.createCourse(newCourse);
         System.out.println("Course creation was successful! Sending you back to the Faculty dashboard...");

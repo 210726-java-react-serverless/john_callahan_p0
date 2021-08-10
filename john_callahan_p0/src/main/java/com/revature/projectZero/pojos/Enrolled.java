@@ -2,6 +2,12 @@ package com.revature.projectZero.pojos;
 
 import java.util.Objects;
 
+/**
+ * This POJO is necessary because it is where the username of a student is stored and then persisted
+ * to a separate 'enrolled' database inside of MongoDB. Standard courses need to be separate because
+ * they aren't tagged with any specific student.
+ */
+
 public class Enrolled {
     private String classID;
     private String username;

@@ -11,9 +11,9 @@ import com.revature.projectZero.util.exceptions.ResourcePersistenceException;
 import java.util.List;
 
 /**
-    A service-layer middleman that validates input before passing it to the database class responsible for
- placing it into the database. It also does Session Tracking.
-     */
+ *  A service-layer middleman that validates input before passing it to the database class responsible for
+ *  placing it into the database. It also does Session Tracking.
+ */
 
 public class ValidationService {
 

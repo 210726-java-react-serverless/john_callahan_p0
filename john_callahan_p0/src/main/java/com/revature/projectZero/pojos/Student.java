@@ -3,6 +3,13 @@ package com.revature.projectZero.pojos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Objects;
 
+/**
+ * This POJO is necessary because it stores user data, typically compiled through the 'StudentRegisterPage' Page.
+ * This data is validated within the service layer then passed to the SchoolRepository for injection into the
+ * 'StudentCredentials' database in MongoDB. Unused getters and setters are left in case of future
+ * expansion on this program.
+ */
+
 @JsonIgnoreProperties (ignoreUnknown = true)
 public class Student {
 
