@@ -25,14 +25,19 @@ public class FacultyDelete extends Page {
         String input = reader.readLine();
         if(input.equals("n") || input.equals("N")) {
             router.navigate("/f_dashboard");
+            return;
         }
 
         System.out.print("\nPlease enter the ID/call-sign of the class you would like to delete (A good example of this is ENG101)"
                     + "\n> ");
         String id = reader.readLine();
 
-        checker.deleteCourse(id);
-        System.out.println("The Delete function was a success!");
+        boolean success = checker.deleteCourse(id);
+        if (success) {
+            System.out.println("The Delete function was a success!");
+        } else {
+            System.out.println("Sorry! That course could not be deleted!");
+        }
 
         // Query the user for their intention.
         System.out.print("\nWould you like to delete another course?"

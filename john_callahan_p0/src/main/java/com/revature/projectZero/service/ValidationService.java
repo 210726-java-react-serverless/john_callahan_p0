@@ -7,7 +7,8 @@ import com.revature.projectZero.pojos.Faculty;
 import com.revature.projectZero.pojos.Student;
 import com.revature.projectZero.repositories.SchoolRepository;
 import com.revature.projectZero.util.exceptions.ResourcePersistenceException;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.util.List;
 
 /**
@@ -21,6 +22,7 @@ public class ValidationService {
 
         public ValidationService(SchoolRepository studentRepo){ this.schoolRepo = studentRepo; }
 
+        Logger logger = LogManager.getLogger(ValidationService.class);
         private boolean isValid = true;
         private Student authStudent;
         private Faculty authFac;
@@ -30,18 +32,28 @@ public class ValidationService {
 
                 if (!isUserValid(newStudent)) {
                         throw new InvalidRequestException("Invalid user data provided!");
-                }
 
+                }
                 schoolRepo.save(newStudent);
+                logger.info("New Student registered!" + newStudent);
+
         }
 
         // This will attempt to persist a created course to the courses database.
         public void createCourse(Course newCourse) {
+                try {
+                        // Verify that the class ID is not already taken.
+                        if (isClassIDTaken(newCourse.getClassID()))
+                                throw new InvalidRequestException("Class ID cannot already be taken!");
 
-                newCourse.setTeacher(this.authFac.getLastName());
+                        newCourse.setTeacher(this.authFac.getLastName());
 
-                if (isCourseValid(newCourse)) {
-                        schoolRepo.newCourse(newCourse);
+                        if (isCourseValid(newCourse)) {
+                                schoolRepo.newCourse(newCourse);
+                                logger.info("New Course created!" + newCourse);
+                        }
+                } catch(InvalidRequestException ire) {
+                        System.out.println(ire.getMessage());
                 }
         }
 
@@ -130,16 +142,30 @@ public class ValidationService {
                 }
         }
 
-        public void deleteCourse(String id) {
-                if (isClassIDValid(id)) {
-                        schoolRepo.deleteCourse(id);
+        public boolean deleteCourse(String id) {
+                try {
+                        if (isClassIDValid(id) && isClassIDTaken(id)) {
+                                schoolRepo.deleteCourse(id);
+                                logger.info("Course " + id + " deleted!");
+                                return true;
+                        }
+                } catch(InvalidRequestException ire) {
+                        System.out.println(ire.getMessage());
                 }
+                return false;
         }
 
-        public void deregister(String id) {
-                if (isClassIDValid(id)) {
-                        schoolRepo.deleteEnrolled(id, this.authStudent.getUsername());
+        public boolean deregister(String id) {
+                try {
+                        if (isClassIDValid(id) && isClassIDTaken(id)) {
+                                schoolRepo.deleteEnrolled(id, this.authStudent.getUsername());
+                                logger.info("Course " + id + " owned by " + authStudent.getUsername() + " deleted!");
+                                return true;
+                        }
+                } catch(InvalidRequestException ire) {
+                        System.out.println(ire.getMessage());
                 }
+                return false;
         }
 
 
@@ -183,11 +209,9 @@ public class ValidationService {
         }
 
         public boolean isClassIDValid(String ClassID) {
+
                 // Verify that the class ID is exactly six characters long.
                 if (ClassID.length() != 6) throw new RuntimeException("Class ID must be exactly six characters long!");
-
-                // Verify that the class ID is not already taken.
-                if (isClassIDTaken(ClassID)) throw new RuntimeException("Class ID cannot already be taken!");
 
                 // Verify that all characters in ClassID are uppercase
                 for (int i=0; i<ClassID.length(); i++) {

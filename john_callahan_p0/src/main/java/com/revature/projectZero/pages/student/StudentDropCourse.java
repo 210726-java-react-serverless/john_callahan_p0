@@ -30,8 +30,14 @@ public class StudentDropCourse extends Page {
                 + "\n> ");
         String id = reader.readLine();
 
-        checker.deregister(id);
-        System.out.println("You have successfully dropped the course!");
+        boolean success = checker.deregister(id);
+
+        // This is a pass/fail marker.
+        if (success) {
+            System.out.println("You have successfully dropped the class!");
+        } else {
+            System.out.println("We could not find that class!");
+        }
 
         // Query the user for their intention.
         System.out.print("\nWould you like to drop another course?"

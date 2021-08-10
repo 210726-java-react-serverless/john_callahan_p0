@@ -23,12 +23,12 @@ public class FacultyRead extends Page {
         List<Course> courses = checker.getTeacherClasses();
 
         if(courses != null) {
-            for (Course cours : courses) {
-                System.out.println("\nName: " + cours.getName()
-                        + "\nID/Call-Sign: " + cours.getClassID()
-                        + "\nDescription: " + cours.getDesc()
-                        + "\nTeacher: " + cours.getTeacher()
-                        + "\nOpen: " + cours.isOpen());
+            for (Course course : courses) {
+                System.out.println("\nName: " + course.getName()
+                        + "\nID/Call-Sign: " + course.getClassID()
+                        + "\nDescription: " + course.getDesc()
+                        + "\nTeacher: " + course.getTeacher()
+                        + "\nOpen: " + course.isOpen());
             }
         } else {
             System.out.println("You have no courses!");

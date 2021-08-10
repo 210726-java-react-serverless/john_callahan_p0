@@ -25,6 +25,7 @@ public class FacultyUpdate extends Page {
 
         if(input.equals("n") || input.equals("N")) {
             router.navigate("/f_dashboard");
+            return;
         }
 
         System.out.print("\nPlease input the call-sign/ID of the class you would like to update (e.g. ENG101)"
@@ -84,6 +85,7 @@ public class FacultyUpdate extends Page {
         }
 
         Course renewedCourse = new Course(name, newId, desc, thisCourse.getTeacher(), isOpen);
+        System.out.println(renewedCourse);
         checker.updateCourse(renewedCourse, id);
 
         System.out.println("Update service completed!");

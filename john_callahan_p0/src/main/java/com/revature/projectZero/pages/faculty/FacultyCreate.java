@@ -25,6 +25,7 @@ public class FacultyCreate extends Page {
 
         if(input.equals("n") || input.equals("N")) {
             router.navigate("/f_dashboard");
+            return;
         }
 
         System.out.print("\nOkay. Please enter the details of the new class:"

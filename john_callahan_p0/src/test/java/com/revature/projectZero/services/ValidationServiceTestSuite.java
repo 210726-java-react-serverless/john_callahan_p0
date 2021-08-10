@@ -135,7 +135,7 @@ public class ValidationServiceTestSuite {
 
         // Arrange
         String validID = "CHM242";
-        when(mockSchoolRepo.findCourseByID(anyString())).thenReturn(null);
+        when(mockSchoolRepo.findCourseByID(anyString())).thenReturn(new Course("TestyPlaceholder","TST222","This is a placeholder","Valid",true));
         sut.setAuthStudent(new Student("ValidUser", "banana".hashCode(),"Test","Validerson","test@text.com"));
 
         // Act
@@ -258,5 +258,26 @@ public class ValidationServiceTestSuite {
         // Assert
         verify(mockSchoolRepo, times(1)).enroll(any());
         verify(mockSchoolRepo, times(1)).newCourse(any());
+    }
+
+    @Test
+    public void deleteCourseAndDeregister_ReturnsFalse_GivenInvalidInput() {
+
+        // Arrange
+        when(mockSchoolRepo.findCourseByID(anyString())).thenReturn(null);
+        String input = "tst242";
+        String input2 = "TST949";
+
+        // Act
+        boolean deregisterActualResult = sut.deregister(input);
+        boolean deregisterActualResult2 = sut.deregister(input2);
+        boolean deleteCourseActualResult = sut.deleteCourse(input);
+        boolean deleteCourseActualResult2 = sut.deleteCourse(input2);
+
+        // Assert
+        Assert.assertFalse(deregisterActualResult);
+        Assert.assertFalse(deregisterActualResult2);
+        Assert.assertFalse(deleteCourseActualResult);
+        Assert.assertFalse(deleteCourseActualResult2);
     }
 }
