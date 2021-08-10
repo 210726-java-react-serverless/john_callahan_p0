@@ -1,6 +1,7 @@
 package com.revature.projectZero.services;
 
 import com.revature.projectZero.pojos.Course;
+import com.revature.projectZero.pojos.Faculty;
 import com.revature.projectZero.pojos.Student;
 import com.revature.projectZero.repositories.SchoolRepository;
 import com.revature.projectZero.service.ValidationService;
@@ -9,6 +10,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.mockito.Mockito.*;
 
 public class ValidationServiceTestSuite {
@@ -114,7 +116,7 @@ public class ValidationServiceTestSuite {
 
     }
 
-    @Test(expected = InvalidRequestException.class)
+    @Test
     public void returnsFalse_GivenDuplicateClassID() {
 
         // Arrange
@@ -122,25 +124,139 @@ public class ValidationServiceTestSuite {
         when(mockSchoolRepo.findCourseByID(anyString())).thenReturn(null);
 
         // Act
-        sut.isCourseValid(testCourse);
+        boolean actualResult = sut.isCourseValid(testCourse);
 
         // Assert
-        // This will return an exception.
+        Assert.assertFalse(actualResult);
     }
 
     @Test
-    public void returnsTrue_GivenValidClassID() {
+    public void deleteAndDeregister_returnsTrue_GivenValidClassID() {
 
         // Arrange
         String validID = "CHM242";
         when(mockSchoolRepo.findCourseByID(anyString())).thenReturn(null);
+        sut.setAuthStudent(new Student("ValidUser", "banana".hashCode(),"Test","Validerson","test@text.com"));
 
         // Act
         sut.deregister(validID);
         sut.deleteCourse(validID);
 
-        // Assert  // TODO: This does not work! It does not know who Authfac is!
+        // Assert
         verify(mockSchoolRepo, times(1)).deleteEnrolled(any(), any());
         verify(mockSchoolRepo, times(1)).deleteCourse(any());
+    }
+
+    @Test
+    public void updateCourse_ReturnsTrue_GivenValidCourseAndClassID() {
+
+        // Arrange
+        String validID = "CHM242";
+        Course validCourse = new Course("Chemistry 2","CHM242","This is a test course, only here because there is need.","Test",true);
+        sut.setAuthFac(new Faculty("TestDummy","banana".hashCode(),"Test","Validson","test@text.com"));
+
+        // Act
+        sut.updateCourse(validCourse, validID);
+
+        // Assert
+        verify(mockSchoolRepo, times(1)).updateCourse(any(), any(), any());
+    }
+
+    @Test
+    public void getStudentAndFac_ReturnsTrue_GivenValidUsers() {
+
+        // Assert
+        sut.setAuthFac(new Faculty("TestDummy","banana".hashCode(),"Test","Validson","test@text.com"));
+        sut.setAuthStudent(new Student("TestDummy","banana".hashCode(),"Test","Validson","test@text.com"));
+
+        // Act
+        Faculty testFac = sut.getAuthFac();
+        Student testStudent = sut.getStudent();
+
+        // Assert
+        Assert.assertNotEquals(null, testFac);
+        Assert.assertNotEquals(null, testStudent);
+    }
+
+    @Test
+    public void getStudentAndAuthfac_ReturnsFalse_GivenNullValues() {
+
+        // Arrange
+        sut.setAuthStudent(null);
+        sut.setAuthFac(null);
+
+        // Act
+        Faculty testFac = sut.getAuthFac();
+        Student testStudent = sut.getStudent();
+
+        // Assert
+        Assert.assertNull(testFac);
+        Assert.assertNull(testStudent);
+    }
+
+    @Test
+    public void facAndStudentLogin_ReturnsTrue_GivenValidCredentials() {
+
+        // Arrange
+        String username = "Valid";
+        int password = "Valid".hashCode();
+
+        // Act
+        sut.facLogin(username, password);
+        sut.login(username, password);
+
+        // Assert
+        verify(mockSchoolRepo, times(1)).findFacultyByCredentials(anyString(), anyInt());
+        verify(mockSchoolRepo, times(1)).findStudentByCredentials(anyString(), anyInt());
+    }
+
+    @Test(expected = InvalidRequestException.class)
+    public void facAndStudentLogin_ThrowsException_GivenBlankUsername() {
+
+        // Arrange
+        String falseUser = "   ";
+        int password = "Valid".hashCode();
+
+        try {
+            // Act
+            sut.facLogin(falseUser, password);
+            sut.login(falseUser, password);
+        } finally {
+            // Assert
+            verify(mockSchoolRepo, times(0)).findStudentByCredentials(anyString(), anyInt());
+            verify(mockSchoolRepo, times(0)).findFacultyByCredentials(anyString(), anyInt());
+        }
+    }
+
+    @Test
+    public void logoutFunction_SetsVariablesToNull() {
+
+        // Arrange
+        sut.setAuthFac(new Faculty("TestDummy","banana".hashCode(),"Test","Validson","test@text.com"));
+        sut.setAuthStudent(new Student("TestDummy","banana".hashCode(),"Test","Validson","test@text.com"));
+
+        // Act
+        sut.logout();
+
+        // Assert
+        Assert.assertNull(sut.getAuthFac());
+        Assert.assertNull(sut.getStudent());
+    }
+
+    @Test
+    public void createAndEnrollCourse_ReturnTrue_GivenValidInput() {
+
+        // Arrange
+        Course testCourse = new Course("Testing and you 101","TST101","This is a placeholder for the sake of testing. Do not enroll to this.","Valid",true);
+        sut.setAuthFac(new Faculty("p0tter","banana".hashCode(),"Severus","Snape","SlytherinCyberSecurity@Hogwarts.com"));
+        sut.setAuthStudent(new Student("iemBatman","expelliarmus".hashCode(),"Harry","Potter","theCh0SenOne@Gryffindor.net"));
+
+        // Act
+        sut.enroll(testCourse);
+        sut.createCourse(testCourse);
+
+        // Assert
+        verify(mockSchoolRepo, times(1)).enroll(any());
+        verify(mockSchoolRepo, times(1)).newCourse(any());
     }
 }

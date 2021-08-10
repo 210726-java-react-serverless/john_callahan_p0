@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
     A service-layer middleman that validates input before passing it to the database class responsible for
- placing it into the database.
+ placing it into the database. It also does Session Tracking.
      */
 
 public class ValidationService {
@@ -36,7 +36,7 @@ public class ValidationService {
         }
 
         // This will attempt to persist a created course to the courses database.
-        public void createCourse(Course newCourse) { // TODO test this!
+        public void createCourse(Course newCourse) {
 
                 newCourse.setTeacher(this.authFac.getLastName());
 
@@ -47,7 +47,7 @@ public class ValidationService {
 
         // This enrolls a student into a course, grafting their username to it,
         // and placing it within the separate 'enrolled' database.
-        public void enroll(Course selectedCourse) { // TODO test this!
+        public void enroll(Course selectedCourse) {
                 if (isCourseValid(selectedCourse)) {
                         Enrolled enrollIn = new Enrolled(this.authStudent.getUsername(), selectedCourse.getName(),
                                 selectedCourse.getClassID(), selectedCourse.getDesc(), selectedCourse.getTeacher());
@@ -62,7 +62,15 @@ public class ValidationService {
                 this.authFac = null;
         }
 
-        public Student login(String username, int hashPass) { // TODO test this!
+        public void setAuthStudent(Student authStudent) {
+                this.authStudent = authStudent;
+        }
+
+        public void setAuthFac(Faculty authFac) {
+                this.authFac = authFac;
+        }
+
+        public Student login(String username, int hashPass) {
                 if (username == null || username.trim().equals("")) {
                         throw new InvalidRequestException("Invalid user credentials provided!");
                 }
@@ -75,7 +83,7 @@ public class ValidationService {
         }
 
         // Sends Student data to the requested location
-        public Student getStudent() { // TODO: test this!
+        public Student getStudent() {
                 if(this.authStudent != null || this.isValid) {
                         return this.authStudent;
                 } else {
@@ -83,7 +91,7 @@ public class ValidationService {
                 }
         }
 
-        public Faculty facLogin(String username, int hashPass) { // TODO test this!
+        public Faculty facLogin(String username, int hashPass) {
                 if (username == null || username.trim().equals("")) {
                         throw new InvalidRequestException("Invalid user credentials provided!");
                 }
@@ -93,7 +101,7 @@ public class ValidationService {
         }
 
         // Sends faculty user data to the requested location
-        public Faculty getAuthFac() { // TODO test this!
+        public Faculty getAuthFac() {
                 if(this.authFac != null || this.isValid) {
                         return this.authFac;
                 } else {
@@ -113,7 +121,7 @@ public class ValidationService {
         // This fetches the list of classes associated with a certain teacher name.
         public List<Course> getTeacherClasses() { return schoolRepo.findCourseByTeacher(this.authFac.getLastName()); }
 
-        public void updateCourse(Course newCourse, String id) { // TODO test this!
+        public void updateCourse(Course newCourse, String id) {
                 if (isCourseValid(newCourse)) {
                         String teacher = this.authFac.getLastName();
                         schoolRepo.updateCourse(newCourse, id, teacher);
@@ -122,13 +130,13 @@ public class ValidationService {
                 }
         }
 
-        public void deleteCourse(String id) { // TODO Test this!
+        public void deleteCourse(String id) {
                 if (isClassIDValid(id)) {
                         schoolRepo.deleteCourse(id);
                 }
         }
 
-        public void deregister(String id) { // TODO Test this!
+        public void deregister(String id) {
                 if (isClassIDValid(id)) {
                         schoolRepo.deleteEnrolled(id, this.authStudent.getUsername());
                 }
@@ -136,20 +144,29 @@ public class ValidationService {
 
 
         public boolean isCourseValid(Course course) {
-                if (course == null) return false;
-                if (course.getName() == null || course.getName().trim().equals("")) throw new RuntimeException("Course name cannot be null");
-                if (course.getClassID() == null || course.getClassID().trim().equals("")) throw new RuntimeException("Class ID cannot be blank or null");
-                if (course.getDesc() == null || course.getDesc().trim().equals("")) throw new RuntimeException("Course description cannot be blank or null");
-                if (course.getTeacher() == null) throw new RuntimeException("Teacher cannot be null");
+                try {
+                        if (course == null) return false;
+                        if (course.getName() == null || course.getName().trim().equals(""))
+                                throw new InvalidRequestException("Course name cannot be null");
+                        if (course.getClassID() == null || course.getClassID().trim().equals(""))
+                                throw new InvalidRequestException("Class ID cannot be blank or null");
+                        if (course.getDesc() == null || course.getDesc().trim().equals(""))
+                                throw new InvalidRequestException("Course description cannot be blank or null");
+                        if (course.getTeacher() == null) throw new InvalidRequestException("Teacher cannot be null");
 
-                isClassIDValid(course.getClassID());
+                        isClassIDValid(course.getClassID());
 
-                // Verify that the course description is up to par.
-                if (course.getDesc().length() < 20 && course.getDesc().length() > 50) throw new RuntimeException("Course description must be at least twenty characters and no more than fifty characters");
+                        // Verify that the course description is up to par.
+                        if (course.getDesc().length() < 20 && course.getDesc().length() > 50)
+                                throw new InvalidRequestException("Course description must be at least twenty characters and no more than fifty characters");
 
-                // Verify that the course name is within valid boundaries.
-                if (course.getName().length() < 5 && course.getName().length() <= 20) throw new RuntimeException("Course name must be at least five characters and less than or equal to twenty characters");
-
+                        // Verify that the course name is within valid boundaries.
+                        if (course.getName().length() < 5 && course.getName().length() <= 20)
+                                throw new InvalidRequestException("Course name must be at least five characters and less than or equal to twenty characters");
+                } catch (InvalidRequestException ire) {
+                        System.out.println(ire.getMessage());
+                        return false;
+                }
                 return true;
         }
 
