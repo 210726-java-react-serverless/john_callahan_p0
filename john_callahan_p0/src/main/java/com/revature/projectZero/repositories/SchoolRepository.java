@@ -42,7 +42,7 @@ public class SchoolRepository {
 
     // ====CREATE====
     // This method persists users to the database.
-    public void save(Student newStudent) throws Exception {
+    public Student save(Student newStudent) {
 
         try {
             MongoDatabase database = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
@@ -51,13 +51,13 @@ public class SchoolRepository {
             // this inserts the instance into the "StudentCredentials" database.
             collection.insertOne(newStudent);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Threw an exception at SchoolRepository::save(), full StackTrace follows: " + e);
-            throw new ResourcePersistenceException("That user could not be placed in the database!");
         }
+        return null;
     }
 
-    public void enroll(Enrolled course) throws Exception {
+    public void enroll(Enrolled course) {
         try {
             MongoDatabase database = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
             MongoCollection<Enrolled> collection = database.getCollection("enrolled", Enrolled.class);
@@ -65,13 +65,13 @@ public class SchoolRepository {
             // this inserts the instance into the "StudentCredentials" database.
             collection.insertOne(course);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Threw an exception at SchoolRepository::register(), full StackTrace follows: " + e);
             throw new ResourcePersistenceException("We could not enroll you in that course!");
         }
     }
 
-    public void newCourse(Course course) throws Exception {
+    public void newCourse(Course course) {
         try {
             MongoDatabase database = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
             MongoCollection<Course> collection = database.getCollection("classes", Course.class);
@@ -79,7 +79,7 @@ public class SchoolRepository {
             // this inserts the instance into the "StudentCredentials" database.
             collection.insertOne(course);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Threw an exception at SchoolRepository::newCourse(), full StackTrace follows: " + e);
             throw new ResourcePersistenceException("We're sorry, but we could not register your class!");
         }
@@ -88,7 +88,7 @@ public class SchoolRepository {
 
     // ====READ====
     // This is used for the login function in the service layer.
-    public Student findStudentByCredentials(String username, int hashPass) throws Exception {
+    public Student findStudentByCredentials(String username, int hashPass) {
 
         try {
             MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
@@ -105,8 +105,8 @@ public class SchoolRepository {
 
             return student;
 
-        } catch(Exception e) {
-            logger.error("Threw an exception at SchoolRepository::findStudentByCredentials(), full StackTrace follows: " + e);
+        } catch (JsonProcessingException jpe) {
+            logger.error("Threw an exception at SchoolRepository::findStudentByCredentials(), full StackTrace follows: " + jpe);
             throw new InvalidRequestException("An error has occurred while processing your request!");
         }
     }
@@ -174,12 +174,11 @@ public class SchoolRepository {
     }
 
     // Primarily used to ensure that a Student's input username is unique.
-    public Student findStudentByUsername(String username)  {
+    public Student findStudentByUsername(String username) {
         MongoDatabase p0school = mongoClient.getDatabase("Project0School");
         MongoCollection<Document> usersCollection = p0school.getCollection("StudentCredentials");
         Document queryDoc = new Document("username", username);
         Document isUsernameTaken = usersCollection.find(queryDoc).first();
-
 
         try {
             if (isUsernameTaken != null) {
@@ -192,16 +191,14 @@ public class SchoolRepository {
                 return null;
             }
 
-        } catch( JsonProcessingException jse) {
-            logger.error(jse.getMessage());
+        } catch (JsonProcessingException jse) {
             logger.error("Threw a JsonProcessingException at SchoolRepository::isUsernameTaken, full StackTrace follows: " + jse);
         }
-
         return student;
     }
 
     // This checks to verify if a Student input a unique Email from all others in the system.
-    public Student findStudentByEmail(String email)  {
+    public Student findStudentByEmail(String email) {
         MongoDatabase p0school = mongoClient.getDatabase("Project0School");
         MongoCollection<Document> usersCollection = p0school.getCollection("StudentCredentials");
         Document queryDoc = new Document("email", email);
@@ -219,7 +216,7 @@ public class SchoolRepository {
                 return null;
             }
 
-        } catch( JsonProcessingException jse) {
+        } catch (JsonProcessingException jse) {
             logger.error(jse.getMessage());
             logger.error("Threw a JsonProcessingException at SchoolRepository::isEmailTaken, full StackTrace follows: " + jse);
         }
@@ -228,7 +225,7 @@ public class SchoolRepository {
     }
 
     // This is used in the login function to determine if the user is valid.
-    public Faculty findFacultyByCredentials(String username, int hashPass){
+    public Faculty findFacultyByCredentials(String username, int hashPass) {
 
         try {
             MongoDatabase p0school = mongoClient.getDatabase("Project0School");
@@ -245,7 +242,7 @@ public class SchoolRepository {
 
             return authFac;
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Threw an exception at SchoolRepository::findStudentByCredentials(), full StackTrace follows: " + e);
         }
 
@@ -255,19 +252,50 @@ public class SchoolRepository {
     // ====UPDATE====
     // This class allows teachers to update the information related to their courses. It works by first
     // deleting the old course, then adding a new course with the same details in its place.
-    public void updateCourse(Course course, String id, String teacher) throws Exception {
-        // TODO: If you update a course this way, there is no way for the Enrolled Database to catch up!
+    public void updateCourse(Course course, String id, String teacher) {
+
         try {
             MongoDatabase p0school = mongoClient.getDatabase("Project0School").withCodecRegistry(pojoCodecRegistry);
-            MongoCollection<Document> collection = p0school.getCollection("classes");
-            MongoCollection<Course> updatedCourse = p0school.getCollection("classes", Course.class);
-            Document queryDoc = new Document("classID", id).append("teacher", teacher);
-            Document oldCourse = collection.find(queryDoc).first();
+            // Grab Bson collection
+            MongoCollection<Document> facCollection = p0school.getCollection("classes");
+            MongoCollection<Document> enrollCollection = p0school.getCollection("enrolled");
 
-            if(oldCourse != null) {
+            // Grab POJO objects from database
+            MongoCollection<Course> updatedCourse = p0school.getCollection("classes", Course.class);
+            MongoCollection<Enrolled> updatedEnrolled = p0school.getCollection("enrolled", Enrolled.class);
+
+            // Query
+            Document queryDoc = new Document("classID", id).append("teacher", teacher);
+            Document oldCourse = facCollection.find(queryDoc).first();
+            List<Document> bsonEnrolled = new ArrayList<>();
+            List<Enrolled> oldEnrolled = new ArrayList<>();
+            List<Enrolled> newEnrolled = new ArrayList<>();
+            updatedEnrolled.find(queryDoc).into(oldEnrolled);
+            enrollCollection.find(queryDoc).into(bsonEnrolled);
+
+            if (oldCourse != null) {
+                //Compile the new Enrolled with the details of the teacher-uploaded course
+                for (Enrolled enroll : oldEnrolled) {
+
+                    enroll.setName(course.getName());
+                    enroll.setClassID(course.getClassID());
+                    enroll.setDesc(course.getDesc());
+                    enroll.setOpen(course.isOpen());
+
+                    // Add it to the newEnrolled list
+                    newEnrolled.add(enroll);
+                }
+
+                // Replace all old enrolled with the new enrolled
+                for (int i = 0; i < newEnrolled.size(); i++) {
+                    updatedEnrolled.replaceOne(bsonEnrolled.get(i), newEnrolled.get(i));
+                }
+
+                // Replace the old Course with the new one.
                 updatedCourse.replaceOne(oldCourse, course);
             }
-        } catch(Exception e) {
+
+        } catch (Exception e) {
             logger.error("Threw an exception at SchoolRepository::updateCourse(), full StackTrace follows: " + e);
             throw new ResourcePersistenceException("We're sorry, but that could not be updated!");
         }
@@ -275,49 +303,44 @@ public class SchoolRepository {
 
     // ====DELETE====
     // This method is used by teachers to get rid of a course.
-    public void deleteCourse(String courseID) throws Exception{
-        try {
-            MongoDatabase database = mongoClient.getDatabase("Project0School");
-            MongoCollection<Document> collection = database.getCollection("classes");
-            MongoCollection<Document> enrolledCollection = database.getCollection("enrolled");
-            Document queryDoc = new Document("classID", courseID);
-            Document deletedCourse = collection.find(queryDoc).first();
-            List<Document> enrolledCourses = new ArrayList<>();
-            enrolledCollection.find(queryDoc).into(enrolledCourses);
+    public void deleteCourse(String courseID) {
 
-            // this deletes all instances of the course which students might be enrolled to.
-            if(deletedCourse != null) {
-                for (Document enrolledCourse : enrolledCourses) {
-                    enrolledCollection.deleteMany(enrolledCourse);
-                }
+        MongoDatabase database = mongoClient.getDatabase("Project0School");
+        MongoCollection<Document> collection = database.getCollection("classes");
+        MongoCollection<Document> enrolledCollection = database.getCollection("enrolled");
+        Document queryDoc = new Document("classID", courseID);
+        Document deletedCourse = collection.find(queryDoc).first();
+        List<Document> enrolledCourses = new ArrayList<>();
+        enrolledCollection.find(queryDoc).into(enrolledCourses);
+
+        // this deletes all instances of the course which students might be enrolled to.
+        if (deletedCourse != null) {
+            for (Document enrolledCourse : enrolledCourses) {
+                enrolledCollection.deleteMany(enrolledCourse);
             }
 
             // this deletes the instance from the "classes" database.
-            if(deletedCourse != null) {
-                collection.deleteOne(deletedCourse);
-            }
-
-        } catch (Exception e) {
-            logger.error("Threw an exception at SchoolRepository::deleteCourse(), full StackTrace follows: " + e);
-            throw new InvalidRequestException("That user could not be removed from the database!");
+            collection.deleteOne(deletedCourse);
+        } else {
+            throw new InvalidRequestException("The course turned up no results!");
         }
     }
 
-    public void deleteEnrolled(String courseID, String username) throws Exception{
-        try {
-            MongoDatabase database = mongoClient.getDatabase("Project0School");
-            MongoCollection<Document> collection = database.getCollection("enrolled");
-            Document queryDoc = new Document("id", courseID).append("username", username);
-            Document deleted = collection.find(queryDoc).first();
+    public void deleteEnrolled(String courseID, String username) {
 
-            // this deletes the instance from the "classes" database.
-            if(deleted != null) {
-                collection.deleteOne(deleted);
-            }
+        MongoDatabase database = mongoClient.getDatabase("Project0School");
+        MongoCollection<Document> collection = database.getCollection("enrolled");
+        Document queryDoc = new Document("classID", courseID).append("username", username);
+        Document deleted = collection.find(queryDoc).first();
 
-        } catch (Exception e) {
-            logger.error("Threw an exception at SchoolRepository::deleteCourse(), full StackTrace follows: " + e);
-            throw new InvalidRequestException("That user could not be removed from the database!");
+        System.out.println(deleted);
+
+        // this deletes the instance from the "classes" database.
+        if (deleted != null) {
+            collection.deleteOne(deleted);
+            System.out.println("You have successfully dropped the course!");
+        } else {
+            throw new InvalidRequestException("We could not find a class with that ID!");
         }
     }
 }

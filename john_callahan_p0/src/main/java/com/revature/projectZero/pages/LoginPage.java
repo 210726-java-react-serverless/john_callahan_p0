@@ -13,11 +13,7 @@ public class LoginPage extends Page {
         this.checker = checker;
     }
 
-    //TODO: Clean up the Login page
-
     public final ValidationService checker;
-
-    private boolean isUserFaculty = false;
 
     @Override
     public void render() throws Exception {
@@ -37,11 +33,11 @@ public class LoginPage extends Page {
 
         // This is a long switching statement that checks user input against a variety of potential inputs
         // for the best experience
+        boolean isUserFaculty = false;
         switch(userInput) {
             case "1":
             case "Student":
             case "student":
-                isUserFaculty = false;
                 break;
             case "2":
             case "Faculty":

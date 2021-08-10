@@ -71,7 +71,7 @@ public class StudentEnrollment extends Page {
             router.navigate("/s_dashboard");
         }
 
-        checker.enroll(thisCourse, id);
+        checker.enroll(thisCourse);
 
         System.out.println("You have successfully been enrolled into " + thisCourse.getClassID() + "!");
         System.out.println("Sending you back to the dashboard...");

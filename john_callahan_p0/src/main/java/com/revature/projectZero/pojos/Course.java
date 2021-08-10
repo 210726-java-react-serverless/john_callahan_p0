@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Objects;
 
+/**
+ * This POJO is necessary to keep track of the 'course' objects compiled by teachers and stored into the MongoDB.
+ */
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Course {
     private String classID;

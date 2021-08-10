@@ -10,6 +10,10 @@ import com.revature.projectZero.service.ValidationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The beating heart of the application. So long as appRunning is true,
+ * the application will continue trying to render. This is where the Graceful shutdown occurs.
+ */
 
 public class AppState {
     // Set up the appRunning boolean for closing the app, and the router, linked to the PageRouter class.
@@ -43,9 +47,6 @@ public class AppState {
                 .addPage(new FacultyDelete(reader, router, checker));
     }
 
-    // The beating heart of the application. So long as appRunning is true,
-    // the application will continue trying to render.
-
     Logger logger = LogManager.getLogger(AppState.class);
     public void startApp() {
         router.navigate("/welcome");
@@ -62,7 +63,5 @@ public class AppState {
     }
 
     // the application shutdown method, safely (and effectively) closes the app.
-    public static void closeApp() {
-        appRunning = false;
-    }
+    public static void closeApp() { appRunning = false; }
 }

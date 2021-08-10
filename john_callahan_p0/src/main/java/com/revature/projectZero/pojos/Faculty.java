@@ -4,6 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Objects;
 
+/**
+ * This POJO is necessary because it stores Faculty user data. This prevents Student users from potentially
+ * tricking MongoDB or other sources into thinking that they are an Administrator. By design, it is
+ * impossible to 'register' a Faculty member, and they need to be inserted via JSON into the
+ * MongoDB 'FacultyCredentials' database.
+ */
+
 @JsonIgnoreProperties (ignoreUnknown = true)
 public class Faculty {
 

@@ -25,6 +25,7 @@ public class FacultyCreate extends Page {
 
         if(input.equals("n") || input.equals("N")) {
             router.navigate("/f_dashboard");
+            return;
         }
 
         System.out.print("\nOkay. Please enter the details of the new class:"
@@ -64,7 +65,6 @@ public class FacultyCreate extends Page {
             }
         }
 
-        // TODO: This does not compile proper objects in the database! Only the teacher is visible!
         Course newCourse = new Course(name, id, desc, null, isOpen);
         checker.createCourse(newCourse);
         System.out.println("Course creation was successful! Sending you back to the Faculty dashboard...");
