@@ -10,6 +10,7 @@ import com.revature.projectZero.util.exceptions.ResourcePersistenceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  *  A service-layer middleman that validates input before passing it to the database class responsible for
@@ -198,10 +199,12 @@ public class ValidationService {
 
         // This verifies that students are valid and fit to be placed in the system.
         public boolean isUserValid(Student user) {
+                Pattern emailPattern = Pattern.compile("^(.+)@(.+)$");
                 if (user == null) return false;
                 if (user.getFirstName() == null || user.getFirstName().trim().equals("")) return false;
                 if (user.getLastName() == null || user.getLastName().trim().equals("")) return false;
                 if (user.getEmail() == null || user.getEmail().trim().equals("")) return false;
+                if(!emailPattern.matcher(user.getEmail()).find()) return false;
                 if (user.getUsername() == null || user.getUsername().trim().equals("")) return false;
                 this.isUserUnique(user.getUsername());
                 this.isEmailUnique(user.getEmail());
